@@ -12,11 +12,12 @@ class Entity
 	public:
 		Texture texture;
 		Sprite sprite;
-		double w,h,x,y,speed=0;								// для хитбоксов (надо поменять)
+		double w,h,x,y,speed;
+		int hp;
+		bool life;
 		
 		Entity(std::string file,double X,double Y)
 		{
-			w=14; h=14; // надо поменять
 			x=X; y=Y;
 			texture.loadFromFile(file);
 			sprite.setTexture(texture);
