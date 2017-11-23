@@ -12,8 +12,7 @@ class Entity
 public:
 	Texture texture;
 	Sprite sprite;
-	float w,h,x,y,speed;
-
+	float w, h, x, y, speed;
 	Entity(const std::string &file, float X, float Y, float W, float H)
 	{
 		x=X; y=Y; w=W; h=H; speed=0.0375;
