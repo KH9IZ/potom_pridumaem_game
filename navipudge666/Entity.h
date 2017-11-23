@@ -16,18 +16,17 @@ class Entity
 		int hp;
 		bool life;
 		
-		Entity(std::string file,double X,double Y)
+		Entity(std::string file,double X,double Y, double W, double H)
 		{
-			x=X; y=Y;
+			x=X; y=Y; w=W; h=H;
 			texture.loadFromFile(file);
 			sprite.setTexture(texture);
 			sprite.setPosition(x,y);
-			sprite.setOrigin(x/2,y/2);
 		}
 		
 		FloatRect getRect()
 		{
-			return FloatRect(sprite.getPosition().x-x/2, sprite.getPosition().y-y/2, w, h);
+			return FloatRect(x-w, y-h, w, h);
 		}
 		
 };

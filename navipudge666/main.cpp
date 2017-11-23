@@ -7,9 +7,12 @@ using namespace sf;
 int main()
 {
 	RenderWindow window(VideoMode(800,600), "Potom Pridumaem");
-	Player cmonBruh("cmonBruh.png",200,200);
 	Event event;
 	Clock clock;
+	
+	Player cmonBruh("cmonBruh.png",0,0,14,14);
+	
+	Player entity("chai_pyu.png",400,400,15,15);
 	
 	while (window.isOpen())
 	{
@@ -22,9 +25,12 @@ int main()
 			if (event.type == Event::Closed)
 				window.close();
 		}
+		if (cmonBruh.getRect().intersects(entity.getRect()))
+			cmonBruh.sprite.setColor(Color::Red); else cmonBruh.sprite.setColor(Color::White);
 		cmonBruh.cok();
 		cmonBruh.control(time);
 		window.clear();
+		window.draw(entity.sprite);
 		window.draw(cmonBruh.sprite);
 		window.display();
 	}
