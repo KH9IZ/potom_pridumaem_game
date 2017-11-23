@@ -8,28 +8,25 @@
 using namespace sf;
 
 class Entity
-{			
-	public:
-		Texture texture;
-		Sprite sprite;
-		double w,h,x,y,speed;
-		int hp;
-		bool life;
-		
-		Entity(const std::string &file,double X,double Y)
-		{
-			x=X; y=Y;
-			texture.loadFromFile(file);
-			sprite.setTexture(texture);
-			sprite.setPosition(x,y);
-			sprite.setOrigin(x/2,y/2);
-		}
-		
-		FloatRect getRect()
-		{
-			return FloatRect(sprite.getPosition().x-x/2, sprite.getPosition().y-y/2, w, h);
-		}
-		
+{
+public:
+	Texture texture;
+	Sprite sprite;
+	float w,h,x,y,speed;
+
+	Entity(const std::string &file, float X, float Y, float W, float H)
+	{
+		x=X; y=Y; w=W; h=H; speed=0.0375;
+		texture.loadFromFile(file);
+		sprite.setTexture(texture);
+		sprite.setPosition(x,y);
+	}
+
+	FloatRect getRect()
+	{
+		return FloatRect(x-w, y-h, w, h);
+	}
+
 };
 
 #endif
