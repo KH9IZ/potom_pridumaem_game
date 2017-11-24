@@ -13,7 +13,7 @@
 
 class SimpleBullet: public Entity {
 public:
-    SimpleBullet(const std::string &file, float X, float Y, float W, float H) : Entity(file, X, Y, W, H) {}
+    SimpleBullet(const std::string &file, float X, float Y, float W, float H) : Entity(file, X, Y, W, H) {speed = 0.05;}
 
     void move(double time){
         y -= speed*time;

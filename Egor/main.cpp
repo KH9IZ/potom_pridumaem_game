@@ -11,12 +11,14 @@ int main()
 	RenderWindow window(VideoMode(800, 600), "Potom Pridumaem");
 	Event event{};
 	Clock clock;
-	Clock reload_clock;
+	float reload_time;
     std::string img_path = "C:/Users/knyaz/Documents/My progs/c++/potom_pridumaem_game/Egor/img/"; // путь до папки с файлами
 	
 	Player cmonBruh(img_path+"cmonBruh.png", 0, 0, 14 ,14);
 	
 	Player entity(img_path+"chai_pyu.png", 400, 400, 15, 15);
+
+	SimpleBullet sas(img_path+"Bullet.png", cmonBruh.x, cmonBruh.y, 14, 14);
 
     std::vector<SimpleBullet> bullets{};
 
@@ -24,10 +26,11 @@ int main()
     while (window.isOpen())
 	{
 		float time=clock.getElapsedTime().asMicroseconds();
+		reload_time += clock.getElapsedTime().asMicroseconds();
 		clock.restart();
 		time=time/200;
 
-		float reload_time = reload_clock.getElapsedTime().asMilliseconds();
+		//float reload_time = reload_clock.getElapsedTime().asMilliseconds();
 
 
 
@@ -37,21 +40,19 @@ int main()
 				window.close();
 
 		}
-        if (Keyboard::isKeyPressed(Keyboard::Space) && (reload_time>=150)){
-            bullets.push_back(SimpleBullet(img_path+"bull.png", cmonBruh.x, cmonBruh.y, 14, 14));
+        if (Keyboard::isKeyPressed(Keyboard::Space) && (reload_time>=100000)){
+            bullets.push_back(SimpleBullet(img_path+"Bullet.png", cmonBruh.x, cmonBruh.y, 14, 14));
 			reload_time = 0;
-			reload_clock.restart();
         }
 		if (cmonBruh.getRect().intersects(entity.getRect()))
 			cmonBruh.sprite.setColor(Color::Red); else cmonBruh.sprite.setColor(Color::White);
 		cmonBruh.control(time);
-		for(int i=0; i<bullets.size(); i++)
-			bullets[i].move(time);
+		for(int i=0; i<bullets.size(); i++) bullets[i].move(time);
 		window.clear();
-        for(int i=0; i<bullets.size(); i++)
-            window.draw(bullets[i].sprite);
+        for(int i=0; i<bullets.size(); i++) window.draw(bullets[i].sprite);
 		window.draw(entity.sprite);
 		window.draw(cmonBruh.sprite);
+		window.draw(sas.sprite);
 		window.display();
 	}
 	
