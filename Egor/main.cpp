@@ -18,7 +18,9 @@ int main()
 	
 	Player entity(img_path+"chai_pyu.png", 400, 400, 15, 15);
 
-	SimpleBullet sas(img_path+"Bullet.png", cmonBruh.x, cmonBruh.y, 14, 14);
+	Texture texture;
+
+	texture.loadFromFile(img_path+"b.png");
 
     std::vector<SimpleBullet> bullets{};
 
@@ -41,7 +43,7 @@ int main()
 
 		}
         if (Keyboard::isKeyPressed(Keyboard::Space) && (reload_time>=100000)){
-            bullets.push_back(SimpleBullet(img_path+"Bullet.png", cmonBruh.x, cmonBruh.y, 14, 14));
+            bullets.push_back(SimpleBullet(texture, cmonBruh.x, cmonBruh.y, 14, 14));
 			reload_time = 0;
         }
 		if (cmonBruh.getRect().intersects(entity.getRect()))
@@ -52,7 +54,6 @@ int main()
         for(int i=0; i<bullets.size(); i++) window.draw(bullets[i].sprite);
 		window.draw(entity.sprite);
 		window.draw(cmonBruh.sprite);
-		window.draw(sas.sprite);
 		window.display();
 	}
 	
