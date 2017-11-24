@@ -13,18 +13,22 @@ int main()
     double reload_time;
 
 	Player cmonBruh("cmonBruh.png",0,0,14,14);
-	
+
 	Player entity("chai_pyu.png",400,400,15,15);
+
+    SimpleBullet Bullet("Enemy.png", cmonBruh.x, cmonBruh.y, 14, 14);
 
     std::vector<SimpleBullet> bullets{};
 
 	while (window.isOpen())
 	{
+        Bullet.x=cmonBruh.x;
+        Bullet.y=cmonBruh.y;
         double time=clock.getElapsedTime().asMicroseconds();
         reload_time += clock.getElapsedTime().asMicroseconds();
         clock.restart();
         time=time/200;
-		
+
 		while (window.pollEvent(event))
 		{
 			if (event.type == Event::Closed)
@@ -33,7 +37,7 @@ int main()
 		if (cmonBruh.getRect().intersects(entity.getRect()))
 			cmonBruh.sprite.setColor(Color::Red); else cmonBruh.sprite.setColor(Color::White);
         if (Keyboard::isKeyPressed(Keyboard::Space) && (reload_time>=100000)){
-            bullets.push_back(SimpleBullet("Bullet.png", cmonBruh.x, cmonBruh.y, 14, 14));
+            bullets.push_back(Bullet);
             reload_time = 0;
         }
 		//cmonBruh.cok();
@@ -45,6 +49,6 @@ int main()
 		window.draw(cmonBruh.sprite);
 		window.display();
 	}
-	
+
 	return 0;
 }
