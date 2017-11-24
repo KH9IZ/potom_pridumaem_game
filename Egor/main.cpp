@@ -12,7 +12,7 @@ int main()
 	Event event{};
 	Clock clock;
 	float reload_time;
-    std::string img_path = "C:/Users/knyaz/Documents/My progs/c++/potom_pridumaem_game/Egor/img/"; // путь до папки с файлами
+    std::string img_path = "C:/Users/knyaz/Documents/My progs/c++/potom_pridumaem_game/Egor/img/"; // путь до папки с файламиfawf
 	
 	Player cmonBruh(img_path+"cmonBruh.png", 0, 0, 14 ,14);
 	
