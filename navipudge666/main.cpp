@@ -1,4 +1,4 @@
-#include "Entity.h"
+#include "../Egor/Entity.h"
 #include "Player.h"
 #include <SFML/Graphics.hpp>
 

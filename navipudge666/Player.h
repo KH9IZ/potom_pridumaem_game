@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <string>
-#include "Entity.h"
+#include "../Egor/Entity.h"
 #include <iostream>
 
 using namespace sf;
