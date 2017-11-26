@@ -14,17 +14,16 @@ int main()
 
 	Player player("player.png",0,0,5,5);
 
-	Player entity("chai_pyu.png",400,400,28,28);
+	Player entity("Enemy.png",400,400,25,25);
 
-    SimpleBullet Bullet("Enemy.png", player.x, player.y, 14, 14);
-    Bullet.sprite.setScale(0.1,0.1);
+    SimpleBullet Bullet("bullet.png", player.x, player.y, 5, 5);
 
     std::vector<SimpleBullet> bullets{};
 
 	while (window.isOpen())
 	{
-        Bullet.x=player.x+player.w;
-        Bullet.y=player.y+player.h;
+        Bullet.x=player.x+player.texture.getSize().x/2-4;
+        Bullet.y=player.y+player.texture.getSize().y/2-4;
         double time=clock.getElapsedTime().asMicroseconds();
         reload_time += clock.getElapsedTime().asMicroseconds();
         clock.restart();
@@ -37,7 +36,7 @@ int main()
 		}
 		if (player.getRect().intersects(entity.getRect()))
             player.sprite.setColor(Color::Red); else player.sprite.setColor(Color::White);
-        if (Keyboard::isKeyPressed(Keyboard::Space) && (reload_time>=50000)){
+        if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time>=50000)){
             bullets.push_back(Bullet);
             reload_time = 0;
         }

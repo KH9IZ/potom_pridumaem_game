@@ -24,10 +24,9 @@ class Entity
 			sprite.setTexture(texture);
 			sprite.setPosition(x,y);
 		}
-		
 		FloatRect getRect()
 		{
-			return FloatRect(x-w, y-h, w, h);
+			return FloatRect(x+texture.getSize().x/2-w, y+texture.getSize().y/2-h, 2*w, 2*h);
 		}
 		
 };
