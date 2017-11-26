@@ -14,7 +14,7 @@ int main()
 
 	Player player("player.png",0,0,5,5);
 
-	Player entity("Enemy.png",400,400,25,25);
+	Player entity("Enemy.png",400,400,50,50);
 
     SimpleBullet Bullet("bullet.png", player.x, player.y, 5, 5);
 
