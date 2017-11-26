@@ -7,6 +7,8 @@
 
 using namespace sf;
 
+bool is_non_visible (SimpleBullet value) {return (value.y<0);}
+
 int main()
 {
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,9 +61,7 @@ int main()
 		std::list<SimpleBullet>::iterator it;
 		for(it=bullets.begin(); it != bullets.end(); it++) {
 			it->move(time);
-			//if((it->y) < 0) bullets.remove(*it);
 		}
-		bool is_non_visible (SimpleBullet value) {return (value.y<0);}
 		bullets.remove_if(is_non_visible);
 		window.clear();
 		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
