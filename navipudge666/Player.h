@@ -21,13 +21,13 @@ class Player: public Entity
 
 		void control(double time)
 		{
-			if (Keyboard::isKeyPressed(Keyboard::Up) && (y-speed*time > -(texture.getSize().y/2-h)))
+			if (Keyboard::isKeyPressed(Keyboard::Up) && (y-speed*time > -(texture.getSize().y/2-2*h)))
 				y -= speed*time;
-			if (Keyboard::isKeyPressed(Keyboard::Down) && (y+speed*time < 600-(texture.getSize().y/2-h)))
+			if (Keyboard::isKeyPressed(Keyboard::Down) && (y+speed*time < 600-(texture.getSize().y/2+2*h)))
 				y += speed*time;
-			if (Keyboard::isKeyPressed(Keyboard::Left) && (x-speed*time > -(texture.getSize().x/2-w)))
+			if (Keyboard::isKeyPressed(Keyboard::Left) && (x-speed*time > -(texture.getSize().x/2-2*w)))
 				x -= speed*time;
-			if (Keyboard::isKeyPressed(Keyboard::Right) && (x+speed*time <= 800-(texture.getSize().x/2-w)))
+			if (Keyboard::isKeyPressed(Keyboard::Right) && (x+speed*time <= 800-(texture.getSize().x/2+2*w)))
 				x += speed*time;
 			if (Keyboard::isKeyPressed(Keyboard::LShift))
 				speed=1.5/100; else speed=3.75/100;

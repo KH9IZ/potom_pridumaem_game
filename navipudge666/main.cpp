@@ -1,6 +1,6 @@
 #include <string>
 #include <vector>
-#include <iostream>
+#include <list>
 #include <SFML/Graphics.hpp>
 #include "../navipudge666/Entity.h"
 #include "../navipudge666/Player.h"
@@ -12,6 +12,7 @@ RenderWindow window(VideoMode(800,600), "Potom Pridumaem");
 double start_time=0;
 int k=0;
 
+bool is_non_visible (SimpleBullet value) {return (value.y<0);}
 
 void StartPicture()
 {
@@ -45,7 +46,7 @@ int main(){
 
     SimpleBullet Bullet("bullet.png", player.x, player.y, 5, 5, 0.1);
 
-    std::vector<SimpleBullet> bullets{};
+    std::list<SimpleBullet> bullets{};
 
 	while (window.isOpen())
 	{
@@ -77,15 +78,20 @@ int main(){
 
 		if (player.getRect().intersects(entity.getRect()))
             player.sprite.setColor(Color::Red); else player.sprite.setColor(Color::White);
+
         if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time>=50000)){
             bullets.push_back(Bullet);
             reload_time = 0;
         }
         //cmonBruh.cok();
         player.control(time);
-        for(int i=0; i<bullets.size(); i++) bullets[i].move(time);
+		std::list<SimpleBullet>::iterator it;
+		for(it=bullets.begin(); it != bullets.end(); it++) {
+			it->move(time);
+		}
+        bullets.remove_if(is_non_visible);
 		window.clear();
-        for(int i=0; i<bullets.size(); i++) window.draw(bullets[i].sprite);
+		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
 		window.draw(entity.sprite);
 		window.draw(player.sprite);
 		window.display();
