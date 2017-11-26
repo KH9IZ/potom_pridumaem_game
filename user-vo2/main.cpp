@@ -1,5 +1,6 @@
 #include "Entity.h"
-#include "Player.h"
+//#include "Player.h"
+#include "enemy1.h"
 #include "SimpleBullet.h"
 #include <SFML/Graphics.hpp>
 
@@ -7,6 +8,8 @@ using namespace sf;
 
 int main()
 {
+	double x1=1,y1=1;
+
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////// ВСЕМ ПОМЕНЯТЬ !!! ///////////////////////////////////////////////////////////////////
 	std::string img_path = "C:/potom_pridumaem_game/images/"; // путь до папки с файламиfawf
@@ -18,27 +21,31 @@ int main()
 	Clock clock;
 	float reload_time = 0;
 
-	Player player(img_path+"player.png", 0, 0, 5, 5);
+//	Player player(img_path+"player.png", 0, 0, 5, 5);
 	
-	Player entity(img_path+"Enemy.png", 400, 400, 25, 25);
+//	Player entity(img_path+"Enemy.png", 400, 400, 25, 25);
+	
+	Enemy enemy(img_path+"Enemy.png",100,300,25,25);
+	
+//	SimpleBullet Bullet(img_path+"bullet.png", player.x, player.y, 5, 5);
 
-	SimpleBullet Bullet(img_path+"bullet.png", player.x, player.y, 5, 5);
-
-    std::vector<SimpleBullet> bullets{};
-
+//    std::vector<SimpleBullet> bullets/*{}*/;
+	double speed=0.1;
+	y1= std::cos(45*PI/180)*0.1*1;
+	x1= std::sin(45*PI/180)*0.1*1;
 
     while (window.isOpen())
 	{
 		// Задаём начальную координату пули
-		Bullet.x=player.x+player.texture.getSize().x/2-4;
-		Bullet.y=player.y+player.texture.getSize().y/2-4;
+//		Bullet.x=player.x;
+//	Bullet.y=player.y;
 
 		// Работа с временем
 		float time=clock.getElapsedTime().asMicroseconds();
 		reload_time += clock.getElapsedTime().asMicroseconds();
 		clock.restart();
 		time=time/200;
-
+		
 		// Обработка событий
 		while (window.pollEvent(event))
 		{
@@ -46,19 +53,23 @@ int main()
 				window.close();
 
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time>=50000)){
-            bullets.push_back(Bullet);
-			reload_time = 0;
-        }
-		if (player.getRect().intersects(entity.getRect()))
-			player.sprite.setColor(Color::Red);
-		else player.sprite.setColor(Color::White);
-		player.control(time);
-		for(int i=0; i<bullets.size(); i++) bullets[i].move(time);
+//		if (Keyboard::isKeyPressed(Keyboard::Space) && (reload_time>=50000)){
+ //           bullets.push_back(Bullet);
+//			reload_time = 0;
+//        }
+//		if (player.getRect().intersects(entity.getRect()))
+//			player.sprite.setColor(Color::Red);
+//		else player.sprite.setColor(Color::White);
+//		player.control(time);
+//		for(int i=0; i<bullets.size(); i++) bullets[i].move(time);
 		window.clear();
-        for(int i=0; i<bullets.size(); i++) window.draw(bullets[i].sprite);
-		window.draw(entity.sprite);
-		window.draw(player.sprite);
+		
+		x1=enemy.gogo(time,45,x1,y1);
+		y1=std::pow((pow(0.1,2)-pow(x1,2)),0.5);
+		window.draw(SANEK1.sprite);
+//        for(int i=0; i<bullets.size(); i++) window.draw(bullets[i].sprite);
+//		window.draw(entity.sprite);
+//		window.draw(player.sprite);
 		window.display();
 	}
 	
