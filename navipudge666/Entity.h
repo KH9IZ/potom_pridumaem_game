@@ -20,7 +20,7 @@ class Entity
 		{
 			x=X; y=Y; w=W; h=H; speed=SPEED;
 			file = "C:/Games/ppg/potom_pridumaem_game/images/"+file;
-			texture.loadFromFile(file);
+            texture.loadFromFile(file);
 			sprite.setTexture(texture);
 			sprite.setPosition(x,y);
 		}
