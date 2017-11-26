@@ -42,11 +42,7 @@ void StartPicture()
 	window.display();
 };
 
-int main()
-{
-
-
-	RenderWindow window(VideoMode(800, 600), "Potom Pridumaem Game");
+int main(){
 
 	Event event{};
 	Clock clock;
