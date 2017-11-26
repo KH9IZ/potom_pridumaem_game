@@ -30,7 +30,7 @@ class Player: public Entity
 			if (Keyboard::isKeyPressed(Keyboard::Right) && (x+speed*time <= 800-w))
 				x += speed*time;
 			if (Keyboard::isKeyPressed(Keyboard::LShift))
-				speed=2.5/100; else speed=3.75/100;
+				speed=1.5/100; else speed=3.75/100;
 			sprite.setPosition(x,y);
 		}
 };
