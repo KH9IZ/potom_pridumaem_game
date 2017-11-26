@@ -15,7 +15,7 @@ static std::string img_path = "C:/Users/knyaz/Documents/My progs/c++/potom_pridu
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-static RenderWindow window(VideoMode(800,600), "Potom Pridumaem Game");
+RenderWindow window(VideoMode(800,600), "Potom Pridumaem Game");
 double start_time=0;
 int k=0;
 
@@ -50,12 +50,16 @@ int main(){
 	bool StartPic=true;
 
 	Player player(img_path+"player.png",0,0,5,5,1.5/100);
-	Texture background;
+	Texture background, backgroundR;
+	Sprite backgroundS, backgroundSR;
 	background.loadFromFile(img_path+"background.jpg");
-	Sprite backgroundS;
 	backgroundS.setTexture(background);
 	backgroundS.setScale(0.64,1);
 	backgroundS.setPosition(0,-1200);
+	backgroundR.loadFromFile(img_path+"background_reversed.png");
+	backgroundSR.setTexture(backgroundR);
+	backgroundSR.setScale(0.64,1);
+	backgroundSR.setPosition(0,-3200);
 
 	Player entity(img_path+"Enemy.png",400,400,50,50,0);
 
@@ -108,12 +112,16 @@ int main(){
 		for(it=bullets.begin(); it != bullets.end(); it++) it->move(time);
 		bullets.remove_if(is_non_visible);
 
-		backgroundS.move(0, 0.02*time);
-		if(backgroundS.getPosition().y>0)
-			backgroundS.setPosition(0,-1200);
+		backgroundS.move(0,0.1*time);
+		backgroundSR.move(0,0.1*time);
+		if(backgroundS.getPosition().y>800)
+			backgroundS.setPosition(0,-3200);
+		if(backgroundSR.getPosition().y>800)
+			backgroundSR.setPosition(0,-3200);
 
 		window.clear();
 		window.draw(backgroundS);
+		window.draw(backgroundSR);
 		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
 		window.draw(entity.sprite);
 		window.draw(player.sprite);
