@@ -97,9 +97,14 @@ int main(){
 		}
         bullets.remove_if(is_non_visible);
 
-		backgroundS.move(0,0.02*time);
+		backgroundS.move(0,0.1*time);
 		if(backgroundS.getPosition().y>0)
+		{
+			std::cout<<backgroundS.getPosition().y;
 			backgroundS.setPosition(0,-1200);
+			background.loadFromFile("C:/Games/ppg/potom_pridumaem_game/images/background_reversed.png");
+			backgroundS.setTexture(background);
+		}
 
 		window.clear();
 		window.draw(backgroundS);
