@@ -1,6 +1,6 @@
-#include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
+#include <SFML/Graphics.hpp>
 #include <list>
 #include "Entity.h"
 #include "Player.h"
@@ -8,7 +8,14 @@
 
 using namespace sf;
 
-RenderWindow window(VideoMode(800,600), "Potom Pridumaem");
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////// ВСЕМ ПОМЕНЯТЬ !!! ///////////////////////////////////////////////////////////////////
+static std::string img_path = "C:/Users/knyaz/Documents/My progs/c++/potom_pridumaem_game/images/"; // путь до папки с файлами
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+static RenderWindow window(VideoMode(800,600), "Potom Pridumaem Game");
 double start_time=0;
 int k=0;
 
@@ -18,7 +25,6 @@ bool is_non_visible (SimpleBullet value) {
 
 void StartPicture()
 {
-
 	if ((start_time >= 1.5) && (k < 3))
 	{
 		k++;
@@ -26,7 +32,7 @@ void StartPicture()
 	}
 	std::vector<std::string> sTextures={"blank.png","potom.png","pridumaem.png","game.png"};
 	Texture sTexture;
-	sTexture.loadFromFile("C:/Games/ppg/potom_pridumaem_game/images/"+sTextures[k]);
+	sTexture.loadFromFile(img_path+sTextures[k]);
 	Sprite sSprite;
 	sSprite.setTexture(sTexture);
 	sSprite.setScale(1.067, 1.117);
@@ -36,26 +42,24 @@ void StartPicture()
 	window.display();
 };
 
-int main()
-{
-	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////// ВСЕМ ПОМЕНЯТЬ !!! ///////////////////////////////////////////////////////////////////
-	std::string img_path = "C:/Users/knyaz/Documents/My progs/c++/potom_pridumaem_game/images/"; // путь до папки с файламиfawf
-	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-	RenderWindow window(VideoMode(800, 600), "Potom Pridumaem Game");
+int main(){
 
 	Event event{};
 	Clock clock;
 	float reload_time = 0;
 	bool StartPic=true;
 
-	Player player(img_path+"player.png", 0, 0, 5, 5);
-	
-	Player entity(img_path+"Enemy.png", 400, 400, 25, 25);
+	Player player(img_path+"player.png",0,0,5,5,1.5/100);
+	Texture background;
+	background.loadFromFile(img_path+"background.jpg");
+	Sprite backgroundS;
+	backgroundS.setTexture(background);
+	backgroundS.setScale(0.64,1);
+	backgroundS.setPosition(0,-1200);
 
-	SimpleBullet Bullet(img_path+"bullet.png", player.x, player.y, 5, 5);
+	Player entity(img_path+"Enemy.png",400,400,50,50,0);
+
+    SimpleBullet Bullet(img_path+"bullet.png", player.x, player.y, 5, 5, 0.1);
 
     std::list<SimpleBullet> bullets{};
 
@@ -103,7 +107,13 @@ int main()
 		std::list<SimpleBullet>::iterator it;
 		for(it=bullets.begin(); it != bullets.end(); it++) it->move(time);
 		bullets.remove_if(is_non_visible);
+
+		backgroundS.move(0, 0.02*time);
+		if(backgroundS.getPosition().y>0)
+			backgroundS.setPosition(0,-1200);
+
 		window.clear();
+		window.draw(backgroundS);
 		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
 		window.draw(entity.sprite);
 		window.draw(player.sprite);
