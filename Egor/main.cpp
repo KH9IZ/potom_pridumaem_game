@@ -23,7 +23,7 @@ int main()
 
 
 	RenderWindow window(VideoMode(800, 600), "Potom Pridumaem Game");
-	window_size = window.getSize()
+	window_size = window.getSize();
 
 	Event event{};
 	Clock clock;
