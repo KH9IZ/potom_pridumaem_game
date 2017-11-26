@@ -4,7 +4,7 @@ project(potom_pridumaem_game)
 set(EXECUTABLE_NAME "potom_pridumaem_game")
 set(CMAKE_CXX_STANDARD 17)
 
-set(SOURCE_FILES Egor/main.cpp Egor/Entity.h Egor/Player.h Egor/SimpleBullet.h)
+set(SOURCE_FILES main.cpp Entity.h Player.h SimpleBullet.h)
 add_executable(potom_pridumaem_game ${SOURCE_FILES} )
 
 set(SFML_DIR "C:/Users/knyaz/Documents/My progs/c++/potom_pridumaem_game/SFML/cmake/Modules")
