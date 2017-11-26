@@ -1,33 +1,64 @@
+#include <string>
+#include <vector>
+#include <SFML/Graphics.hpp>
 #include "../navipudge666/Entity.h"
 #include "../navipudge666/Player.h"
-#include "SimpleBullet.h"
-#include <SFML/Graphics.hpp>
+#include "../navipudge666/SimpleBullet.h"
 
 using namespace sf;
 
-int main()
+RenderWindow window(VideoMode(800,600), "Potom Pridumaem");
+double start_time;
+
+void StartPicture()
 {
-	RenderWindow window(VideoMode(800,600), "Potom Pridumaem");
+	int k=0;
+	if ((start_time >= 1500) && (k < 4))
+	{
+		k++;
+		start_time=0;
+	}
+	std::vector<std::string> sTextures={"blank.png","potom.png","pridumaem.png","game.png"};
+	Texture sTexture;
+	sTexture.loadFromFile(sTextures[k]);
+	Sprite sSprite;
+	sSprite.setTexture(sTexture);
+    sSprite.setPosition(0,0);
+	window.clear();
+	window.draw(sSprite);
+	window.display();
+};
+
+int main(){
 	Event event;
 	Clock clock;
     double reload_time;
 
-	Player player("player.png",0,0,5,5);
+	Player player("player.png",0,0,5,5,1.5/100);
 
-	Player entity("Enemy.png",400,400,50,50);
+	Player entity("Enemy.png",400,400,50,50,0);
 
-    SimpleBullet Bullet("bullet.png", player.x, player.y, 5, 5);
+    SimpleBullet Bullet("bullet.png", player.x, player.y, 5, 5, 0.1);
 
     std::vector<SimpleBullet> bullets{};
 
 	while (window.isOpen())
 	{
+		bool StartPic=true;
+
         Bullet.x=player.x+player.texture.getSize().x/2-4;
         Bullet.y=player.y+player.texture.getSize().y/2-4;
         double time=clock.getElapsedTime().asMicroseconds();
+		start_time+=clock.getElapsedTime().asMicroseconds();
         reload_time += clock.getElapsedTime().asMicroseconds();
         clock.restart();
         time=time/200;
+
+		if (!Keyboard::isKeyPressed(Keyboard::Unknown))
+		{
+			StartPicture();
+			continue;
+		}
 
 		while (window.pollEvent(event))
 		{
@@ -40,7 +71,7 @@ int main()
             bullets.push_back(Bullet);
             reload_time = 0;
         }
-		//cmonBruh.cok();
+        //cmonBruh.cok();
         player.control(time);
         for(int i=0; i<bullets.size(); i++) bullets[i].move(time);
 		window.clear();
@@ -49,6 +80,5 @@ int main()
 		window.draw(player.sprite);
 		window.display();
 	}
-
 	return 0;
 }

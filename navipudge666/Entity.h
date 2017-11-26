@@ -16,9 +16,9 @@ class Entity
 		int hp;
 		bool life;
 		
-		Entity(std::string file,double X,double Y, double W, double H)
+		Entity(std::string file,double X,double Y, double W, double H, double SPEED)
 		{
-			x=X; y=Y; w=W; h=H;
+			x=X; y=Y; w=W; h=H; speed=SPEED;
 			file = "C:/Games/ppg/potom_pridumaem_game/images/"+file;
 			texture.loadFromFile(file);
 			sprite.setTexture(texture);

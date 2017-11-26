@@ -11,7 +11,7 @@ using namespace sf;
 class Player: public Entity
 {
 	public:
-		Player(std::string file,double X,double Y, double W, double H): Entity(file, X, Y, W, H) {}
+		Player(std::string file,double X,double Y, double W, double H,double SPEED): Entity(file, X, Y, W, H, SPEED) {}
 
 
 		void cok()
