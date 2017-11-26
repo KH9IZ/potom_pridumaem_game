@@ -8,24 +8,29 @@
 
 using namespace sf;
 
-class Player: public Entity {
+class Player: public Entity
+{
 public:
-	Player(const std::string &file,float X, float Y, float W, float H): Entity(file, X, Y, W, H) {}
+	Player(std::string file,double X,double Y, double W, double H): Entity(file, X, Y, W, H) {}
 
+
+	void cok()
+	{
+		std::cout<<x<<' '<<y<<' '<<x-w<<' '<<x+w<<' '<<y-h<<' '<<y+h<<std::endl;
+	}
 
 	void control(double time)
 	{
-		if (Keyboard::isKeyPressed(Keyboard::Up) && (y-speed*time > -h))
+		if (Keyboard::isKeyPressed(Keyboard::Up) && (y-speed*time > -(texture.getSize().y/2-h)))
 			y -= speed*time;
-		if (Keyboard::isKeyPressed(Keyboard::Down) && (y+speed*time < 600-h))
+		if (Keyboard::isKeyPressed(Keyboard::Down) && (y+speed*time < 600-(texture.getSize().y/2-h)))
 			y += speed*time;
-		if (Keyboard::isKeyPressed(Keyboard::Left) && (x-speed*time > -w))
+		if (Keyboard::isKeyPressed(Keyboard::Left) && (x-speed*time > -(texture.getSize().x/2-w)))
 			x -= speed*time;
-		if (Keyboard::isKeyPressed(Keyboard::Right) && (x+speed*time <= 800-w))
+		if (Keyboard::isKeyPressed(Keyboard::Right) && (x+speed*time <= 800-(texture.getSize().x/2-w)))
 			x += speed*time;
 		if (Keyboard::isKeyPressed(Keyboard::LShift))
-			speed=0.025;
-		else speed=0.0375;
+			speed=1.5/100; else speed=3.75/100;
 		sprite.setPosition(x,y);
 	}
 };

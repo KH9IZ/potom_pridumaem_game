@@ -1,5 +1,5 @@
-#include "../Egor/Entity.h"
-#include "Player.h"
+#include "../navipudge666/Entity.h"
+#include "../navipudge666/Player.h"
 #include "SimpleBullet.h"
 #include <SFML/Graphics.hpp>
 

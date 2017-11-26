@@ -30,8 +30,8 @@ int main()
     while (window.isOpen())
 	{
 		// Задаём начальную координату пули
-		Bullet.x=player.x;
-		Bullet.y=player.y;
+		Bullet.x=player.x+player.texture.getSize().x/2-4;
+		Bullet.y=player.y+player.texture.getSize().y/2-4;
 
 		// Работа с временем
 		float time=clock.getElapsedTime().asMicroseconds();
@@ -46,7 +46,7 @@ int main()
 				window.close();
 
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Space) && (reload_time>=50000)){
+		if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time>=50000)){
             bullets.push_back(Bullet);
 			reload_time = 0;
         }
