@@ -4,10 +4,13 @@
 #include "Player.h"
 #include "SimpleBullet.h"
 
-
 using namespace sf;
 
-bool is_non_visible (SimpleBullet value) {return (value.y<0);}
+Vector2u window_size;
+
+bool is_non_visible (SimpleBullet value) {
+	return (value.y<0 || value.x<0 || value.x>window_size.x || value.y>window_size.y);
+}
 
 int main()
 {
@@ -59,9 +62,7 @@ int main()
 		else player.sprite.setColor(Color::White);
 		player.control(time);
 		std::list<SimpleBullet>::iterator it;
-		for(it=bullets.begin(); it != bullets.end(); it++) {
-			it->move(time);
-		}
+		for(it=bullets.begin(); it != bullets.end(); it++) it->move(time);
 		bullets.remove_if(is_non_visible);
 		window.clear();
 		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
