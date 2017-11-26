@@ -1,7 +1,9 @@
+#include <SFML/Graphics.hpp>
+#include <list>
 #include "Entity.h"
 #include "Player.h"
 #include "SimpleBullet.h"
-#include <SFML/Graphics.hpp>
+
 
 using namespace sf;
 
@@ -9,7 +11,7 @@ int main()
 {
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////// ВСЕМ ПОМЕНЯТЬ !!! ///////////////////////////////////////////////////////////////////
-	std::string img_path = "C:/Users/knyaz/Documents/My progs/c++/potom_pridumaem_game/images/"; // путь до папки с файламиfawf
+	std::string img_path = "C:/Users/knyaz/Documents/My progs/c++/potom_pridumaem_game/images/"; // путь до папки с файлами
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -24,14 +26,14 @@ int main()
 
 	SimpleBullet Bullet(img_path+"bullet.png", player.x, player.y, 5, 5);
 
-    std::vector<SimpleBullet> bullets{};
+    std::list<SimpleBullet> bullets{};
 
 
     while (window.isOpen())
 	{
 		// Задаём начальную координату пули
-		Bullet.x=player.x;
-		Bullet.y=player.y;
+		Bullet.x=player.x+player.texture.getSize().x/2-4;
+		Bullet.y=player.y+player.texture.getSize().y/2-4;
 
 		// Работа с временем
 		float time=clock.getElapsedTime().asMicroseconds();
@@ -46,7 +48,7 @@ int main()
 				window.close();
 
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Space) && (reload_time>=50000)){
+		if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time>=50000)){
             bullets.push_back(Bullet);
 			reload_time = 0;
         }
@@ -54,9 +56,15 @@ int main()
 			player.sprite.setColor(Color::Red);
 		else player.sprite.setColor(Color::White);
 		player.control(time);
-		for(int i=0; i<bullets.size(); i++) bullets[i].move(time);
+		std::list<SimpleBullet>::iterator it;
+		for(it=bullets.begin(); it != bullets.end(); it++) {
+			it->move(time);
+			//if((it->y) < 0) bullets.remove(*it);
+		}
+		bool is_non_visible (SimpleBullet value) {return (value.y<0);}
+		bullets.remove_if(is_non_visible);
 		window.clear();
-        for(int i=0; i<bullets.size(); i++) window.draw(bullets[i].sprite);
+		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
 		window.draw(entity.sprite);
 		window.draw(player.sprite);
 		window.display();
