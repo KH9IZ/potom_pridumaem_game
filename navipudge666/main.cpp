@@ -41,6 +41,12 @@ int main(){
     bool StartPic=true;
 
 	Player player("player.png",0,0,5,5,1.5/100);
+	Texture background;
+	background.loadFromFile("C:/Games/ppg/potom_pridumaem_game/images/background.jpg");
+	Sprite backgroundS;
+	backgroundS.setTexture(background);
+	backgroundS.setScale(0.64,1);
+	backgroundS.setPosition(0,-1200);
 
 	Player entity("Enemy.png",400,400,50,50,0);
 
@@ -90,7 +96,13 @@ int main(){
 			it->move(time);
 		}
         bullets.remove_if(is_non_visible);
+
+		backgroundS.move(0,0.02*time);
+		if(backgroundS.getPosition().y>0)
+			backgroundS.setPosition(0,-1200);
+
 		window.clear();
+		window.draw(backgroundS);
 		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
 		window.draw(entity.sprite);
 		window.draw(player.sprite);
