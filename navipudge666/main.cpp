@@ -27,8 +27,8 @@ void StartPicture()
 	sTexture.loadFromFile("C:/Games/ppg/potom_pridumaem_game/images/"+sTextures[k]);
 	Sprite sSprite;
 	sSprite.setTexture(sTexture);
-    sSprite.setScale(1.067, 1.117);
-    sSprite.setPosition(0,0);
+	sSprite.setScale(1.067, 1.117);
+	sSprite.setPosition(0,0);
 	window.clear();
 	window.draw(sSprite);
 	window.display();

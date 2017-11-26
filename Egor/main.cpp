@@ -4,9 +4,7 @@
 #include "Player.h"
 #include "SimpleBullet.h"
 
-
 using namespace sf;
-
 
 Vector2u window_size;
 
@@ -23,8 +21,6 @@ int main()
 
 
 	RenderWindow window(VideoMode(800, 600), "Potom Pridumaem Game");
-	window_size = window.getSize()
-
 	Event event{};
 	Clock clock;
 	float reload_time = 0;
