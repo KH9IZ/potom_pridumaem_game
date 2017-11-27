@@ -13,9 +13,9 @@ public:
 	Texture texture;
 	Sprite sprite;
 	float w, h, x, y, speed;
-	Entity(const std::string &file, float X, float Y, float W, float H)
+	Entity(const std::string &file, float X, float Y, float W, float H, float SPEED)
 	{
-		x=X; y=Y; w=W; h=H; speed=0.0375;
+		x=X; y=Y; w=W; h=H; speed=SPEED;
 		texture.loadFromFile(file);
 		sprite.setTexture(texture);
 		sprite.setOrigin(w/2, h/2);
