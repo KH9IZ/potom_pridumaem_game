@@ -101,8 +101,8 @@ int main(){
 		}
         bullets.remove_if(is_non_visible);
 
-		backgroundS.move(0,0.1*time);
-		backgroundSR.move(0,0.1*time);
+		backgroundS.move(0,0.017*time);
+		backgroundSR.move(0,0.017*time);
 		if(backgroundS.getPosition().y>800)
 			backgroundS.setPosition(0,-3200);
 		if(backgroundSR.getPosition().y>800)
