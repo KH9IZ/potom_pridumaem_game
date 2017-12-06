@@ -30,7 +30,7 @@ int main()
 //	SimpleBullet Bullet(img_path+"bullet.png", player.x, player.y, 5, 5);
 
 //    std::vector<SimpleBullet> bullets/*{}*/;
-	double speed=0.2;
+	//double speed=0.2;
 	//y1= std::cos(45*PI/180)*0.1*1;
 	//x1= std::sin(45*PI/180)*0.1*1;
     double corner=45;
