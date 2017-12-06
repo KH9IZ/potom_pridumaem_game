@@ -8,7 +8,7 @@ using namespace sf;
 
 int main()
 {
-	double x1=1,y1=1;
+	//double x1=1,y1=1;
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// //////////////////////////// ВСЕМ ПОМЕНЯТЬ !!! ///////////////////////////////////////////////////////////////////
@@ -30,10 +30,10 @@ int main()
 //	SimpleBullet Bullet(img_path+"bullet.png", player.x, player.y, 5, 5);
 
 //    std::vector<SimpleBullet> bullets/*{}*/;
-	double speed=0.1;
-	y1= std::cos(45*PI/180)*0.1*1;
-	x1= std::sin(45*PI/180)*0.1*1;
-
+	double speed=0.2;
+	//y1= std::cos(45*PI/180)*0.1*1;
+	//x1= std::sin(45*PI/180)*0.1*1;
+    double corner=45;
     while (window.isOpen())
 	{
 		// Задаём начальную координату пули
@@ -64,9 +64,8 @@ int main()
 //		for(int i=0; i<bullets.size(); i++) bullets[i].move(time);
 		window.clear();
 		
-		x1=enemy.gogo(time,45,x1,y1);
-		y1=std::pow((pow(0.1,2)-pow(x1,2)),0.5);
-		window.draw(SANEK1.sprite);
+		corner=enemy.gogo(time,corner,300,400);
+		window.draw(enemy.sprite);
 //        for(int i=0; i<bullets.size(); i++) window.draw(bullets[i].sprite);
 //		window.draw(entity.sprite);
 //		window.draw(player.sprite);
