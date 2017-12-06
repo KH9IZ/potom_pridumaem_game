@@ -21,7 +21,8 @@ public:
 	double	x2;
        //bool mov=false;
 	y2= std::cos(corner*PI/180)*speed*time;
-	x2= std::sin(corner*PI/180)*speed*time;std::cout<<x2<<' '<<y2<<std::endl;
+	x2= std::sin(corner*PI/180)*speed*time;
+      //  std::cout<<x2<<' '<<y2<<std::endl;
       //  if (((y+y2)==-(texture.getSize().y/2-h)) || ((x+x2)== -(texture.getSize().x/2-w))) {
          //   corner = 45 + corner;
          //   mov = true;

@@ -64,7 +64,7 @@ int main()
 //		for(int i=0; i<bullets.size(); i++) bullets[i].move(time);
 		window.clear();
 		
-		corner=enemy.gogo(time,corner,300,400);
+		enemy.gogo(time,corner,300,400);
 		window.draw(enemy.sprite);
 //        for(int i=0; i<bullets.size(); i++) window.draw(bullets[i].sprite);
 //		window.draw(entity.sprite);
