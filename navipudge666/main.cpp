@@ -41,12 +41,16 @@ int main(){
     bool StartPic=true;
 
 	Player player("player.png",0,0,5,5,1.5/100);
-	Texture background;
+	Texture background, backgroundR;
+	Sprite backgroundS, backgroundSR;
 	background.loadFromFile("C:/Games/ppg/potom_pridumaem_game/images/background.jpg");
-	Sprite backgroundS;
 	backgroundS.setTexture(background);
 	backgroundS.setScale(0.64,1);
 	backgroundS.setPosition(0,-1200);
+	backgroundR.loadFromFile("C:/Games/ppg/potom_pridumaem_game/images/background_reversed.png");
+	backgroundSR.setTexture(backgroundR);
+	backgroundSR.setScale(0.64,1);
+	backgroundSR.setPosition(0,-3200);
 
 	Player entity("Enemy.png",400,400,50,50,0);
 
@@ -97,17 +101,16 @@ int main(){
 		}
         bullets.remove_if(is_non_visible);
 
-		backgroundS.move(0,0.1*time);
-		if(backgroundS.getPosition().y>0)
-		{
-			std::cout<<backgroundS.getPosition().y;
-			backgroundS.setPosition(0,-1200);
-			background.loadFromFile("C:/Games/ppg/potom_pridumaem_game/images/background_reversed.png");
-			backgroundS.setTexture(background);
-		}
+		backgroundS.move(0,0.017*time);
+		backgroundSR.move(0,0.017*time);
+		if(backgroundS.getPosition().y>800)
+			backgroundS.setPosition(0,-3200);
+		if(backgroundSR.getPosition().y>800)
+			backgroundSR.setPosition(0,-3200);
 
 		window.clear();
 		window.draw(backgroundS);
+		window.draw(backgroundSR);
 		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
 		window.draw(entity.sprite);
 		window.draw(player.sprite);
@@ -115,3 +118,5 @@ int main(){
 	}
 	return 0;
 }
+
+//
