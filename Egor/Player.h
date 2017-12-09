@@ -11,13 +11,8 @@ using namespace sf;
 class Player: public Entity
 {
 	public:
-		Player(std::string file,double X,double Y, double W, double H,double SPEED): Entity(file, X, Y, W, H, SPEED) {}
+		Player(std::string file, float X, float Y, float W, float H, float SPEED): Entity(file, X, Y, W, H, SPEED) {}
 
-
-		void cok()
-		{
-			std::cout<<x<<' '<<y<<' '<<x-w<<' '<<x+w<<' '<<y-h<<' '<<y+h<<std::endl;
-		}
 
 		void control(double time)
 		{
