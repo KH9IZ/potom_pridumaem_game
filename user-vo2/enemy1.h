@@ -23,21 +23,13 @@ public:
        bool mov=false;
 	y2= std::cos(corner/180*PI)*speed*time;
 	x2= std::sin(corner/180*PI)*speed*time;
-        if ((y - y2) <= -(texture.getSize().y / 2 - 2*h)) {
+        if (((y - y2) <= -(texture.getSize().y / 2 - 2*h)) || ((y + y2) >= 600 - (texture.getSize().y / 2 - 2*h))) {
                mov = true;
 
                y2=-y2;
            }
-        if ((y + y2) >= 600 - (texture.getSize().y / 2 - 2*h)) {
+        if (((x - x2) <= -(texture.getSize().x / 2 - 2*w)) || ((x + x2) >= 800 - (texture.getSize().x / 2 - 2*w))){
                mov=true;
-            y2=-y2;
-           }
-        if ((x - x2) <= -(texture.getSize().x / 2 - 2*w)) {
-               mov=true;
-               x2=-x2;
-           }
-        if ((x + x2) >= 800 - (texture.getSize().x / 2 - 2*w)) {
-                mov=true;
                x2=-x2;
            }
         if (x>= 800 - (texture.getSize().x / 2 - 2*w)){
