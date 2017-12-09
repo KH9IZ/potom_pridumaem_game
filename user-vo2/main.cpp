@@ -25,7 +25,7 @@ int main()
 	
 //	Player entity(img_path+"Enemy.png", 400, 400, 25, 25);
 	
-	Enemy enemy(img_path+"Enemy.png",100,300,25,25);
+	Enemy enemy(img_path+"Enemy.png",100,300,25,25, 0.05);
 	
 //	SimpleBullet Bullet(img_path+"bullet.png", player.x, player.y, 5, 5);
 
@@ -64,7 +64,7 @@ int main()
 //		for(int i=0; i<bullets.size(); i++) bullets[i].move(time);
 		window.clear();
 		
-		enemy.gogo(time,corner,300,400);
+		corner=enemy.gogo(time,corner);
 		window.draw(enemy.sprite);
 //        for(int i=0; i<bullets.size(); i++) window.draw(bullets[i].sprite);
 //		window.draw(entity.sprite);
