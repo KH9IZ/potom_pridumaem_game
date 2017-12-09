@@ -5,6 +5,7 @@
 #include "../navipudge666/Entity.h"
 #include "../navipudge666/Player.h"
 #include "../navipudge666/SimpleBullet.h"
+#include "../navipudge666/enemy1.h"
 
 using namespace sf;
 
@@ -103,7 +104,7 @@ int main(){
 
 	Event event;
 	Clock clock;
-    float reload_time;
+    float reload_time,corner=45;
 
 	Texture background, backgroundR;
 	Sprite backgroundS, backgroundSR;
@@ -116,6 +117,7 @@ int main(){
 	backgroundSR.setScale(0.64,1);
 	backgroundSR.setPosition(0,-3200);
 
+    Enemy enemy(img_path+"Enemy.png",100,100,14,14,0.1);
 
     SimpleBullet Bullet(img_path+"bullet.png", player.x, player.y, 5, 5, 0.1);
     std::list<SimpleBullet> bullets{};
@@ -158,9 +160,11 @@ int main(){
         if(backgroundSR.getPosition().y>800)
             backgroundSR.setPosition(0,-3200);
 
+        corner=enemy.gogo(time,corner);
         window.clear();
         window.draw(backgroundS);
         window.draw(backgroundSR);
+        window.draw(enemy.sprite);
         for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
         window.draw(player.sprite);
         window.display();
