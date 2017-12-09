@@ -5,7 +5,7 @@
 #include "Entity.h"
 #include "Player.h"
 #include "SimpleBullet.h"
-#include "Enemy.h"
+#include "Enemy-my.h"
 
 
 using namespace sf;
@@ -17,7 +17,7 @@ Player player(img_path+"player.png",0,0,5,5,0.0015); // Spawn player
 
 SimpleBullet bullet(img_path+"bullet.png", player.x, player.y, 5, 5, 0.1); // Create bullet
 
-Enemy enemy(img_path+"Enemy.png", 400, 300, 5, 5, 0.1); // Spawn enemy
+Enemy enemy(img_path+"Enemy.png", 400, 300, 100, 100, 0.1); // Spawn enemy
 
 RenderWindow window{};
 
@@ -61,6 +61,7 @@ void new_start_window(){
 
 int main(){
 	window.create(VideoMode(800, 600), "Potom Pridumaem Game"); // Creating window
+	new_start_window();
 
 	Event event{};
 	Clock clock;
@@ -85,7 +86,6 @@ int main(){
 	backgroundSR.setPosition(0,-3200);
 
 
-	new_start_window();
 	while (window.isOpen())
 	{
 		// Задаём начальную координату пули
@@ -131,7 +131,7 @@ int main(){
 		window.draw(backgroundS);
 		window.draw(backgroundSR);
 		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
-		corner=enemy.gogo(time,corner);
+		enemy.move(time);
 		window.draw(enemy.sprite);
 		window.draw(player.sprite);
 		window.display();
