@@ -5,17 +5,29 @@
 #include "Entity.h"
 #include "Player.h"
 #include "SimpleBullet.h"
+#include "Enemy.h"
 
 
 using namespace sf;
 
 
-std::string img_path;
+std::string img_path = "C:/Users/knyaz/Documents/My progs/c++/potom_pridumaem_game/images/";  // Image path;
 
-RenderWindow window(VideoMode(800, 600), "Potom Pridumaem Game"); // Create window
+Player player(img_path+"player.png",0,0,5,5,0.0015); // Spawn player
+
+SimpleBullet bullet(img_path+"bullet.png", player.x, player.y, 5, 5, 0.1); // Create bullet
+
+Enemy enemy(img_path+"Enemy.png", 400, 300, 5, 5, 0.1); // Spawn enemy
+
+RenderWindow window{};
 
 bool is_non_visible (SimpleBullet value) {
-	return (value.y<0 || value.x<0 || value.x>window.getSize().x || value.y>window.getSize().y);
+	if (value.y<0 || value.x<0 || value.x>window.getSize().x || value.y>window.getSize().y) return true;
+	else if (value.sprite.getGlobalBounds().intersects(enemy.sprite.getGlobalBounds())) {
+		enemy.sprite.setScale(0, 0);
+		return true;
+	}
+	else return false;
 }
 
 void new_start_window(){
@@ -48,20 +60,16 @@ void new_start_window(){
 }
 
 int main(){
-	img_path = "C:/Users/knyaz/Documents/My progs/c++/potom_pridumaem_game/images/";  // Image path
+	window.create(VideoMode(800, 600), "Potom Pridumaem Game"); // Creating window
 
 	Event event{};
 	Clock clock;
 	float reload_time = 0;
+	float corner = 45;
 
 
-	Player player(img_path+"player.png",0,0,5,5,1.5/100); // Spawn player
 
-	Player entity(img_path+"Enemy.png",400,400,50,50,0); // Spawn enemy
-
-	SimpleBullet Bullet(img_path+"bullet.png", player.x, player.y, 5, 5, 0.1); // Create bullet
-
-	std::list<SimpleBullet> bullets{}; // list of all bullets
+	std::list<SimpleBullet> bullets{}; // list of all bullets on the screen
 
 
 
@@ -81,8 +89,8 @@ int main(){
 	while (window.isOpen())
 	{
 		// Задаём начальную координату пули
-		Bullet.x=player.x+player.texture.getSize().x/2-4;
-		Bullet.y=player.y+player.texture.getSize().y/2-4;
+		bullet.x=player.x+player.texture.getSize().x/2-4;
+		bullet.y=player.y+player.texture.getSize().y/2-4;
 
 		// Работа с временем
 		float time=clock.getElapsedTime().asMicroseconds();
@@ -97,34 +105,34 @@ int main(){
 				window.close();
 		}
 
-		if (player.getRect().intersects(entity.getRect()))
-            player.sprite.setColor(Color::Red);
-		else player.sprite.setColor(Color::White);
-
         if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time>=50000)){
-            bullets.push_back(Bullet);
+            bullets.push_back(bullet);
             reload_time = 0;
         }
-		if (player.getRect().intersects(entity.getRect()))
-			player.sprite.setColor(Color::Red);
-		else player.sprite.setColor(Color::White);
 		player.control(time);
 		std::list<SimpleBullet>::iterator it;
-		for(it=bullets.begin(); it != bullets.end(); it++) it->move(time);
+		for(it=bullets.begin(); it != bullets.end(); it++) {
+			it->move(time);
+		}
 		bullets.remove_if(is_non_visible);
 
-		backgroundS.move(0,0.1*time);
-		backgroundSR.move(0,0.1*time);
+
+		backgroundS.move(0, 0.1*time);
+		backgroundSR.move(0, 0.1*time);
 		if(backgroundS.getPosition().y>800)
 			backgroundS.setPosition(0,-3200);
 		if(backgroundSR.getPosition().y>800)
 			backgroundSR.setPosition(0,-3200);
 
+
+
+
 		window.clear();
 		window.draw(backgroundS);
 		window.draw(backgroundSR);
 		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
-		window.draw(entity.sprite);
+		corner=enemy.gogo(time,corner);
+		window.draw(enemy.sprite);
 		window.draw(player.sprite);
 		window.display();
 	}
