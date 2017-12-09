@@ -17,9 +17,9 @@ public:
 	Enemy(const std::string &file,float X, float Y, float W, float H, double SPEED): Entity(file, X, Y, W, H, SPEED) {}
 
 
-    double gogo(double time, double corner)
-	{double	y2;
-	double	x2;
+    float gogo(float time, float corner)
+	{float	y2;
+	float	x2;
        bool mov=false;
 	y2= std::cos(corner/180*PI)*speed*time;
 	x2= std::sin(corner/180*PI)*speed*time;
@@ -32,20 +32,22 @@ public:
                mov=true;
                x2=-x2;
            }
-        if (x>= 800 - (texture.getSize().x / 2 - 2*w)){
-            x=800 - (texture.getSize().x / 2 - 2*w)*speed;
+        if (x>= 800- (texture.getSize().x / 2 - 2*w) ){//
+            x=800 - (texture.getSize().x / 2 - 2*w)-x2;
         }
-        if (x <= -(texture.getSize().x / 2 - 2*w)){
-            x= - (texture.getSize().x / 2 - 2*w)*speed;
+        else if (x <=-(texture.getSize().x / 2 - 2*w) ){//
+            x= - (texture.getSize().x / 2 - 2*w)-x2;
         }
-        if (y>= 600 - (texture.getSize().y / 2 - 2*h)){
-            y= 600 - (texture.getSize().y / 2 - 2*h)*speed;
+        else if (y>= 600- (texture.getSize().y / 2 - 2*h)){//600
+            y= 600 - (texture.getSize().y / 2 - 2*h)-y2;
         }
-        if (y<= -(texture.getSize().y / 2 - 2*h)){
-            y= -(texture.getSize().y / 2 - 2*h)*speed;
-        }
+        else if (y<=-(texture.getSize().y / 2 - 2*h) ){//
+            y= -(texture.getSize().y / 2 - 2*h)-y2;
+        }else{
             x+=x2;
             y+=y2;
+        }
+
         if (mov){
             if (rand() % 2==0){
                 corner+=90;
