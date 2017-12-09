@@ -19,7 +19,7 @@ class Entity
 		Entity(std::string file,double X,double Y, double W, double H, double SPEED)
 		{
 			x=X; y=Y; w=W; h=H; speed=SPEED;
-			file = "C:/Games/ppg/potom_pridumaem_game/images/"+file;
+			file = file;
             texture.loadFromFile(file);
 			sprite.setTexture(texture);
 			sprite.setPosition(x,y);
