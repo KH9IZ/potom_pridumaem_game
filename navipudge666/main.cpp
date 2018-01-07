@@ -9,7 +9,7 @@
 
 using namespace sf;
 
-std::string img_path="C:/Games/ppg/potom_pridumaem_game/images/";
+std::string img_path="../images/";
 
 RenderWindow window(VideoMode(800,600), "Potom Pridumaem");
 
@@ -49,6 +49,8 @@ void StartPicture()
 
 void Menu()
 {
+    player.hp=3;
+    bool options=false;
     Clock clock;
     Event event{};
     std::string file;
@@ -62,6 +64,18 @@ void Menu()
     MenuBG.loadFromFile(img_path+"menu.png");
     MenuBGsprite.setTexture(MenuBG);
 
+    Texture empty_hp,hp;
+    hp.loadFromFile(img_path+"hp.png");
+    empty_hp.loadFromFile(img_path+"empty_hp.png");
+    Sprite HP[5];
+    for (int i=0; i<5; i++)
+    {
+        if (i<player.hp)
+            HP[i].setTexture(hp);
+        else
+            HP[i].setTexture(empty_hp);
+        HP[i].setPosition(322+33*i,116);
+    }
     while (window.isOpen())
     {
         Bullet.x=player.x+player.texture.getSize().x/2-4;
@@ -76,7 +90,7 @@ void Menu()
                 window.close();
         }
 
-        if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time>=50000))
+        if (Keyboard::isKeyPressed(Keyboard::Z) && (bullets.size()<1))
         {
             bullets.push_back(Bullet);
             reload_time = 0;
@@ -89,12 +103,70 @@ void Menu()
         for(it=bullets.begin(); it != bullets.end(); it++)
         {
             it->move(time);
+            if (!options && it->sprite.getPosition().y<=136)
+            {
+                if (it->sprite.getPosition().x>50 && it->sprite.getPosition().x<247)
+                    return;
+                if (it->sprite.getPosition().x>551 && it->sprite.getPosition().x<747)
+                    window.close();
+                if (it->sprite.getPosition().x>302 && it->sprite.getPosition().x<497)
+                {
+                    options=true;
+                    MenuBG.loadFromFile(img_path+"options.png");
+                    MenuBGsprite.setTexture(MenuBG);
+                    bullets.clear();
+                    break;
+                }
+            }
+            if (options && it->sprite.getPosition().y<195)
+            {
+                if (it->sprite.getPosition().x>305 && it->sprite.getPosition().x<355)
+                {
+                    if (player.hp<5)
+                    {
+                        player.hp++;
+                        HP[player.hp - 1].setTexture(hp);
+                    }
+                    bullets.clear();
+                    break;
+                }
+                if (it->sprite.getPosition().x>444 && it->sprite.getPosition().x<495)
+                {
+                    if (player.hp>=2)
+                    {
+                        HP[player.hp-1].setTexture(empty_hp);
+                        player.hp--;
+                    }
+                    bullets.clear();
+                    break;
+                }
+            }
+            if (options && it->sprite.getPosition().y<=136)
+            {
+                if (it->sprite.getPosition().x>551 && it->sprite.getPosition().x<747)
+                {
+                    options=false;
+                    MenuBG.loadFromFile(img_path+"menu.png");
+                    MenuBGsprite.setTexture(MenuBG);
+                    bullets.clear();
+                    break;
+                }
+                if (it->sprite.getPosition().x>302 && it->sprite.getPosition().x<497)
+                {
+                    bullets.clear();
+                    break;
+                }
+            }
+            std::cout<<player.hp<<std::endl;
         }
         bullets.remove_if(is_non_visible);
-        player.control(time);
+        player.control_menu(time);
         window.clear();
         window.draw(MenuBGsprite);
         window.draw(player.sprite);
+        if (options)
+            for (int i=0; i<5; i++)
+                window.draw(HP[i]);
         for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
         window.display();
     }
@@ -160,7 +232,7 @@ int main(){
         if(backgroundSR.getPosition().y>800)
             backgroundSR.setPosition(0,-3200);
 
-        corner=enemy.gogo(time,corner);
+        enemy.move(time);
         window.clear();
         window.draw(backgroundS);
         window.draw(backgroundSR);
