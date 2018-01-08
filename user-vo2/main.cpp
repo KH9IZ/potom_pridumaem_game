@@ -19,9 +19,6 @@ std::string img_path = "C:/potom_pridumaem_game/images/";  // Image path;
 
 Player player(img_path+"player.png",0,0,5,5,100); // Spawn player
 
-
-
-
 SimpleBullet bullet(img_path+"bullet.png", player.x, player.y, 5, 5, 0.25); // Create bullet
 
 
@@ -69,37 +66,11 @@ bool is_non_visible (SimpleBullet value) {
     }
 }
 
-int count=0;
 
 
+//void level(float ,float );
 
-void level(float reload_time_enemies,float time){
-    Texture portal_texture;
-    Sprite portal_sprite;
-    std::string Portal_file="C:/potom_pridumaem_game/images/Portal.png";
-    portal_texture.loadFromFile(Portal_file);
-    portal_sprite.setTexture(portal_texture);
-    portal_sprite.setOrigin(283, 249);
-    portal_sprite.setPosition(100,100);
-    window.draw(portal_sprite);
-    portal_sprite.setPosition(700,100);
-    window.draw(portal_sprite);
-    portal_sprite.rotate(1/90);
 
-    if  ((count<=10) && (reload_time_enemies>=5000000)){
-        enemies.push_back(left);
-        enemies.push_back(right);
-        count+=2;
-    }
-
-    for (en=enemies.begin(); en != enemies.end(); en++){
-        en->move(time);
-    }
-
-    enemies.remove_if(destroyed);
-
-    for(en=enemies.begin(); en != enemies.end(); en++) window.draw(en->sprite);
-}
 
 void new_start_window(){
 	Clock clock;
@@ -152,6 +123,14 @@ int main(){
 	backgroundSR.setScale(0.64,1);
 	backgroundSR.setPosition(0,-3200);
 
+
+    Texture portal_texture;
+    Sprite portal_sprite;
+    std::string Portal_file="C:/potom_pridumaem_game/images/Portal.png";
+    portal_texture.loadFromFile(Portal_file);
+    portal_sprite.setTexture(portal_texture);
+    portal_sprite.setOrigin(93, 82);
+
     left.sprite.rotate(135);
     right.sprite.rotate(135);
 	while (window.isOpen())
@@ -159,7 +138,7 @@ int main(){
 		// Задаём начальную координату пули
 		bullet.x=player.x+player.texture.getSize().x/2-4;
 		bullet.y=player.y+player.texture.getSize().y/2-4;
-
+        float timer;
 		// Работа с временем
 		timer=clock.getElapsedTime().asMicroseconds();
 
@@ -189,9 +168,33 @@ int main(){
 		}
 		bullets.remove_if(is_non_visible);
 
-        level(reload_time_enemies,timer);
+        //level 1 start
 
-        reload_time_enemies = 0;
+      /*
+
+      */
+        int count=0;
+
+        if  ((count<=10) && (reload_time_enemies>=5000000)){
+            enemies.push_back(left);
+            enemies.push_back(right);
+            count+=2;
+            reload_time_enemies = 0;
+        }
+
+        for (en=enemies.begin(); en != enemies.end(); en++){
+            en->move(timer);
+        }
+
+        enemies.remove_if(destroyed);
+
+
+
+
+
+       // level 1 finish
+
+
 
 		backgroundS.move(0, 0.05*timer);
 		backgroundSR.move(0, 0.05*timer);
@@ -204,10 +207,24 @@ int main(){
 
 
 		window.clear();
-		window.draw(backgroundS);
-		window.draw(backgroundSR);
-		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
 
+        window.draw(backgroundS);
+        window.draw(backgroundSR);
+
+    if(count<=10) {
+        //count++;
+        portal_sprite.rotate(1);
+        portal_sprite.setPosition(100, 100);
+        window.draw(portal_sprite);
+        portal_sprite.setPosition(700, 100);
+        window.draw(portal_sprite);
+    }
+
+
+
+
+		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
+        for(en=enemies.begin(); en != enemies.end(); en++) window.draw(en->sprite);
 		//enemy.move(time);
 
 		window.draw(player.sprite);
@@ -216,3 +233,4 @@ int main(){
 	
 	return 0;
 }
+
