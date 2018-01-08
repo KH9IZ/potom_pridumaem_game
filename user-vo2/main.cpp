@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "SimpleBullet.h"
 #include "Enemy.h"
+//#include "bits/stdc++.h"
 
 
 std::list<Enemy> enemies{};// list of all enemies on screen
@@ -16,34 +17,88 @@ using namespace sf;
 
 std::string img_path = "C:/potom_pridumaem_game/images/";  // Image path;
 
-Player player(img_path+"dt2.png",0,0,5,5,100); // Spawn player
+Player player(img_path+"player.png",0,0,5,5,100); // Spawn player
+
+
+
 
 SimpleBullet bullet(img_path+"bullet.png", player.x, player.y, 5, 5, 0.25); // Create bullet
 
+
 //Enemy enemy(img_path+"Enemy.png", 50, 50,50, 50, 0.05); // Spawn enemy
 Enemy left (img_path+"MPW.png", 100, 100,50, 50, 0.05);
+
 Enemy right (img_path+"MPW.png", 700, 100 ,50, 50, -0.05);
 
+float timer;
+int score=0;
 RenderWindow window{};
 
-bool destroyed(Enemy value){
-    if (value.hp<=0){
+Texture texture;
 
-        return true;
-    }
-    return false;
+float currentFrame = 1.0;
+
+void explode(float x,float y){
+    currentFrame += 0.5 * timer;
+    if (currentFrame>6)
+        {
+            score+=1000000;// тут что делать после взрыва
+        }
+    texture.loadFromFile(img_path + std::to_string(int(currentFrame)) + "stage.png") ;
 }
+
+bool destroyed (Enemy value)
+{
+    if (value.hp<=0){
+        explode(value.x,value.y);
+        return true;
+    }return false;
+
+}
+
 
 bool is_non_visible (SimpleBullet value) {
     for ( std::list<Enemy>::iterator en = enemies.begin() ; en != enemies.end(); en++ ) {
         //std::advance(en,enemy);
         if (value.y < 0 || value.x < 0 || value.x > window.getSize().x || value.y > window.getSize().y) return true;
         else if (value.sprite.getGlobalBounds().intersects(en->sprite.getGlobalBounds())) {
-            //enemy.sprite.setScale(0, 0);
+           // en->sprite.setScale(0, 0);
             en->hp-=25;
             return true;
         } else return false;
     }
+}
+
+int count=0;
+
+
+
+void level(float reload_time_enemies,float time){
+    Texture portal_texture;
+    Sprite portal_sprite;
+    std::string Portal_file="C:/potom_pridumaem_game/images/Portal.png";
+    portal_texture.loadFromFile(Portal_file);
+    portal_sprite.setTexture(portal_texture);
+    portal_sprite.setOrigin(283, 249);
+    portal_sprite.setPosition(100,100);
+    window.draw(portal_sprite);
+    portal_sprite.setPosition(700,100);
+    window.draw(portal_sprite);
+    portal_sprite.rotate(1/90);
+
+    if  ((count<=10) && (reload_time_enemies>=5000000)){
+        enemies.push_back(left);
+        enemies.push_back(right);
+        count+=2;
+    }
+
+    for (en=enemies.begin(); en != enemies.end(); en++){
+        en->move(time);
+    }
+
+    enemies.remove_if(destroyed);
+
+    for(en=enemies.begin(); en != enemies.end(); en++) window.draw(en->sprite);
 }
 
 void new_start_window(){
@@ -82,15 +137,8 @@ int main(){
 	Event event{};
 	Clock clock;
 	float reload_time = 0,reload_time_enemies=0 ;
-	//float corner = 45;
 
-
-    int count=0;
 	std::list<SimpleBullet> bullets{}; // list of all bullets on the screen
-
-   // for (int i=0;i<21;i++){
-   //     enemies.push_back(enemy);
-   // }
 
 
 	Texture background, backgroundR;
@@ -113,11 +161,12 @@ int main(){
 		bullet.y=player.y+player.texture.getSize().y/2-4;
 
 		// Работа с временем
-		float time=clock.getElapsedTime().asMicroseconds();
+		timer=clock.getElapsedTime().asMicroseconds();
+
 		reload_time += clock.getElapsedTime().asMicroseconds();
         reload_time_enemies += clock.getElapsedTime().asMicroseconds();
 		clock.restart();
-		time=time/200;
+		timer=timer/200;
 
 		// Обработка событий
 		while (window.pollEvent(event))
@@ -126,36 +175,26 @@ int main(){
 				window.close();
 		}
 
-        if  ((count<=10) && (reload_time_enemies>=5000000)){
-
-            enemies.push_back(left);
-            enemies.push_back(right);
-            reload_time_enemies = 0;count+=2;
-        //    std::cout<<enemies.size()<<std::endl;
-        }
-
         if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time>=50000)){
             bullets.push_back(bullet);
             reload_time = 0;
         }
 
-		player.control(time);
+		player.control(timer);
 
 		std::list<SimpleBullet>::iterator it;
 
 		for(it=bullets.begin(); it != bullets.end(); it++) {
-			it->move(time);
+			it->move(timer);
 		}
 		bullets.remove_if(is_non_visible);
 
-        for (en=enemies.begin(); en != enemies.end(); en++){
-            en->move(time);
-        }
+        level(reload_time_enemies,timer);
 
-        enemies.remove_if(destroyed);
+        reload_time_enemies = 0;
 
-		backgroundS.move(0, 0.05*time);
-		backgroundSR.move(0, 0.05*time);
+		backgroundS.move(0, 0.05*timer);
+		backgroundSR.move(0, 0.05*timer);
 		if(backgroundS.getPosition().y>800)
 			backgroundS.setPosition(0,-3200);
 		if(backgroundSR.getPosition().y>800)
@@ -168,7 +207,7 @@ int main(){
 		window.draw(backgroundS);
 		window.draw(backgroundSR);
 		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
-        for(en=enemies.begin(); en != enemies.end(); en++) window.draw(en->sprite);
+
 		//enemy.move(time);
 
 		window.draw(player.sprite);

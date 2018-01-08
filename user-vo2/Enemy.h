@@ -38,7 +38,7 @@ public:
 			speed_y = -speed_y;
 
 		}
-        sprite.rotate(((speed_x-exx)+(speed_y-exy))/speed/2*90);
+        sprite.rotate(((speed_x/exx)*(speed_y/exy))/*speed/2*/*90);
 		sprite.move(speed_x*time, speed_y*time);
 		//corner = (corner+90)%180;
         //std::cout<<speed_x<<' '<<corner<<std::endl;
