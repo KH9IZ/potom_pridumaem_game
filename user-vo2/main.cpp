@@ -107,7 +107,7 @@ int main(){
 
 	Event event{};
 	Clock clock;
-	float reload_time = 0,reload_time_enemies=0 ;
+	float reload_time = 0,reload_time_enemies=0 ,reload_time_portal=0;
 
 	std::list<SimpleBullet> bullets{}; // list of all bullets on the screen
 
@@ -129,7 +129,10 @@ int main(){
     std::string Portal_file="C:/potom_pridumaem_game/images/Portal.png";
     portal_texture.loadFromFile(Portal_file);
     portal_sprite.setTexture(portal_texture);
+    float portal_r=1;
     portal_sprite.setOrigin(93, 82);
+    portal_sprite.setScale(portal_r,portal_r);
+    int count=0;
 
     left.sprite.rotate(135);
     right.sprite.rotate(135);
@@ -144,6 +147,7 @@ int main(){
 
 		reload_time += clock.getElapsedTime().asMicroseconds();
         reload_time_enemies += clock.getElapsedTime().asMicroseconds();
+        reload_time_portal+=clock.getElapsedTime().asMicroseconds();
 		clock.restart();
 		timer=timer/200;
 
@@ -173,7 +177,7 @@ int main(){
       /*
 
       */
-        int count=0;
+
 
         if  ((count<=10) && (reload_time_enemies>=5000000)){
             enemies.push_back(left);
@@ -181,13 +185,15 @@ int main(){
             count+=2;
             reload_time_enemies = 0;
         }
+        else{
+            count++;
+        }
 
         for (en=enemies.begin(); en != enemies.end(); en++){
             en->move(timer);
         }
 
         enemies.remove_if(destroyed);
-
 
 
 
@@ -211,14 +217,20 @@ int main(){
         window.draw(backgroundS);
         window.draw(backgroundSR);
 
-    if(count<=10) {
+    if(count<=11) {
         //count++;
+        if((count==11) && (portal_r>=0) && (reload_time_portal>=2)){
+            portal_sprite.setScale(portal_r,portal_r);
+            portal_r-=0.2;
+            reload_time_portal=0;
+        }
         portal_sprite.rotate(1);
         portal_sprite.setPosition(100, 100);
         window.draw(portal_sprite);
         portal_sprite.setPosition(700, 100);
         window.draw(portal_sprite);
     }
+
 
 
 
