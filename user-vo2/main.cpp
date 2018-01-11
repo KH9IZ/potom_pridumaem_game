@@ -23,9 +23,9 @@ SimpleBullet bullet(img_path+"bullet.png", player.x, player.y, 5, 5, 0.25); // C
 
 
 //Enemy enemy(img_path+"Enemy.png", 50, 50,50, 50, 0.05); // Spawn enemy
-Enemy left (img_path+"MPW.png", 100, 100,50, 50, 0.05);
+Enemy left (img_path+"dt2.png", 100, 100,50, 50, 0.05);
 
-Enemy right (img_path+"MPW.png", 700, 100 ,50, 50, -0.05);
+Enemy right (img_path+"dt2.png", 700, 100 ,50, 50, -0.05);
 
 float timer=0;
 int score=0;
@@ -126,7 +126,7 @@ int main(){
     //работа с порталами
     Texture portal_texture;
     Sprite portal_sprite;
-    std::string Portal_file="C:/potom_pridumaem_game/images/Portal.png";
+    std::string Portal_file=img_path+"Portal.png";
     portal_texture.loadFromFile(Portal_file);
     portal_sprite.setTexture(portal_texture);
     float portal_r=0;
@@ -187,7 +187,7 @@ int main(){
         }
 
          if (portal_open) {
-            if ((count <= 10) && (reload_time_enemies >= 5000000)) {
+            if ((count <10) && (reload_time_enemies >= 5000000)) {
                 enemies.push_back(left);
                 enemies.push_back(right);
                 count += 2;
