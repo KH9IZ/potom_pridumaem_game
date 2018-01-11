@@ -59,7 +59,7 @@ bool is_non_visible (SimpleBullet value) {
         //std::advance(en,enemy);
         if (value.y < 0 || value.x < 0 || value.x > window.getSize().x || value.y > window.getSize().y) return true;
         else if (value.sprite.getGlobalBounds().intersects(en->sprite.getGlobalBounds())) {
-           // en->sprite.setScale(0, 0);
+            // en->sprite.setScale(0, 0);
             en->hp-=25;
             return true;
         } else return false;

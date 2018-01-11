@@ -12,7 +12,7 @@ class Entity
 	public:
 		Texture texture;
 		Sprite sprite;
-		double w,h,x,y,speed;
+		float w,h,x,y,speed;
 		int hp;
 		bool life;
 		
