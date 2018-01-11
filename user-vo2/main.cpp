@@ -27,11 +27,11 @@ Enemy left (img_path+"MPW.png", 100, 100,50, 50, 0.05);
 
 Enemy right (img_path+"MPW.png", 700, 100 ,50, 50, -0.05);
 
-float timer;
+float timer=0;
 int score=0;
 RenderWindow window{};
 
-Texture texture;
+Texture texture_Explode;
 
 float currentFrame = 1.0;
 
@@ -41,7 +41,7 @@ void explode(float x,float y){
         {
             score+=1000000;// тут что делать после взрыва
         }
-    texture.loadFromFile(img_path + std::to_string(int(currentFrame)) + "stage.png") ;
+    texture_Explode.loadFromFile(img_path + std::to_string(int(currentFrame)) + "stage.png") ;
 }
 
 bool destroyed (Enemy value)
@@ -123,16 +123,17 @@ int main(){
 	backgroundSR.setScale(0.64,1);
 	backgroundSR.setPosition(0,-3200);
 
-
+    //работа с порталами
     Texture portal_texture;
     Sprite portal_sprite;
     std::string Portal_file="C:/potom_pridumaem_game/images/Portal.png";
     portal_texture.loadFromFile(Portal_file);
     portal_sprite.setTexture(portal_texture);
-    float portal_r=1;
+    float portal_r=0;
     portal_sprite.setOrigin(93, 82);
     portal_sprite.setScale(portal_r,portal_r);
     int count=0;
+    bool portal_close=false,portal_open=false;
 
     left.sprite.rotate(135);
     right.sprite.rotate(135);
@@ -141,10 +142,9 @@ int main(){
 		// Задаём начальную координату пули
 		bullet.x=player.x+player.texture.getSize().x/2-4;
 		bullet.y=player.y+player.texture.getSize().y/2-4;
-        float timer;
+       // float timer;
 		// Работа с временем
-		timer=clock.getElapsedTime().asMicroseconds();
-
+        timer=clock.getElapsedTime().asMicroseconds();
 		reload_time += clock.getElapsedTime().asMicroseconds();
         reload_time_enemies += clock.getElapsedTime().asMicroseconds();
         reload_time_portal+=clock.getElapsedTime().asMicroseconds();
@@ -177,16 +177,26 @@ int main(){
       /*
 
       */
-
-
-        if  ((count<=10) && (reload_time_enemies>=5000000)){
-            enemies.push_back(left);
-            enemies.push_back(right);
-            count+=2;
-            reload_time_enemies = 0;
+        if((!portal_open) && (portal_r<=1) && (reload_time_portal>=2)){
+            portal_sprite.setScale(portal_r,portal_r);
+            portal_r+=0.002;
+            reload_time_portal=0;
         }
         else{
-            count++;
+            portal_open=true;
+        }
+
+         if (portal_open) {
+            if ((count <= 10) && (reload_time_enemies >= 5000000)) {
+                enemies.push_back(left);
+                enemies.push_back(right);
+                count += 2;
+                reload_time_enemies = 0;
+            }
+         }
+
+        if (count==10){
+            portal_close=true;
         }
 
         for (en=enemies.begin(); en != enemies.end(); en++){
@@ -196,7 +206,7 @@ int main(){
         enemies.remove_if(destroyed);
 
 
-
+        //std::cout<<count<<std::endl;
 
        // level 1 finish
 
@@ -217,13 +227,13 @@ int main(){
         window.draw(backgroundS);
         window.draw(backgroundSR);
 
-    if(count<=11) {
-        //count++;
-        if((count==11) && (portal_r>=0) && (reload_time_portal>=2)){
-            portal_sprite.setScale(portal_r,portal_r);
-            portal_r-=0.2;
-            reload_time_portal=0;
-        }
+        if (count<=10)  {
+
+              if((portal_close) && (portal_r>=0) && (reload_time_portal>=2)){
+                  portal_sprite.setScale(portal_r,portal_r);
+                  portal_r-=0.002;
+                  reload_time_portal=0;
+              }
         portal_sprite.rotate(1);
         portal_sprite.setPosition(100, 100);
         window.draw(portal_sprite);
