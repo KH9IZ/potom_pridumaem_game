@@ -32,6 +32,7 @@ int score=0;
 RenderWindow window{};
 
 Texture texture_Explode;
+Sprite sprite_Explode;
 
 float currentFrame = 1.0;
 
@@ -42,12 +43,17 @@ void explode(float x,float y){
             score+=1000000;// тут что делать после взрыва
         }
     texture_Explode.loadFromFile(img_path + std::to_string(int(currentFrame)) + "stage.png") ;
+    sprite_Explode.setTexture(texture_Explode);
+    sprite_Explode.setPosition(x,y);
+    window.draw(sprite_Explode);
 }
 
 bool destroyed (Enemy value)
 {
     if (value.hp<=0){
-        explode(value.x,value.y);
+        //explode=true;
+        //x_explode=value.x;
+        //y_explode=value.y;
         return true;
     }return false;
 
@@ -107,7 +113,7 @@ int main(){
 
 	Event event{};
 	Clock clock;
-	float reload_time = 0,reload_time_enemies=0 ,reload_time_portal=0;
+	float reload_time = 0,reload_time_enemies=0 ,reload_time_portal=0,reload_time_shift=0;
 
 	std::list<SimpleBullet> bullets{}; // list of all bullets on the screen
 
@@ -133,7 +139,35 @@ int main(){
     portal_sprite.setOrigin(93, 82);
     portal_sprite.setScale(portal_r,portal_r);
     int count=0;
-    bool portal_close=false,portal_open=false;
+    bool portal_close=false,portal_open=false,level2_start=false;
+    std::vector <std::vector <bool>  > asteroid_field (25);
+
+    //работа с полем астероидов
+    Texture asteroid_small_texture;
+    Sprite asteroid_small_sprite;
+    std::string asteroid_small_file=img_path+"asteroid_small.png";
+    asteroid_small_texture.loadFromFile(asteroid_small_file);
+    asteroid_small_sprite.setTexture(asteroid_small_texture);
+    asteroid_small_sprite.setOrigin(250,250);
+    asteroid_small_sprite.setScale(0.5,0.5);
+    for (int i=1;i<=120;i++){
+        int limit=0;
+        for (int j=1;j<=80;j++){
+            int random=rand()%2;
+            if(random==1) {
+                asteroid_field[i].push_back(true);
+                limit++;
+            }
+            else{
+                asteroid_field[i].push_back(false);
+            }
+            if (limit==3){
+                limit=0;
+                asteroid_field[i][j]=false;
+            }
+        }
+    }
+
 
     left.sprite.rotate(135);
     right.sprite.rotate(135);
@@ -148,6 +182,7 @@ int main(){
 		reload_time += clock.getElapsedTime().asMicroseconds();
         reload_time_enemies += clock.getElapsedTime().asMicroseconds();
         reload_time_portal+=clock.getElapsedTime().asMicroseconds();
+        reload_time_shift+=clock.getElapsedTime().asMicroseconds();
 		clock.restart();
 		timer=timer/200;
 
@@ -174,9 +209,6 @@ int main(){
 
         //level 1 start
 
-      /*
-
-      */
         if((!portal_open) && (portal_r<=1) && (reload_time_portal>=2)){
             portal_sprite.setScale(portal_r,portal_r);
             portal_r+=0.002;
@@ -206,11 +238,24 @@ int main(){
         enemies.remove_if(destroyed);
 
 
-        //std::cout<<count<<std::endl;
-
        // level 1 finish
 
+        if (enemies.empty()){
+            level2_start=true;
+        }
 
+        //level 2 start
+
+        int shift =12;
+        if (level2_start) {
+
+            if (reload_time_shift >= 1) {
+                reload_time_shift = 0;
+                shift++;
+            }
+        }
+
+        //level 2 finish
 
 		backgroundS.move(0, 0.05*timer);
 		backgroundSR.move(0, 0.05*timer);
@@ -223,10 +268,11 @@ int main(){
 
 
 		window.clear();
-
+        //draw background
         window.draw(backgroundS);
         window.draw(backgroundSR);
 
+        //draw portals
         if (count<=10)  {
 
               if((portal_close) && (portal_r>=0) && (reload_time_portal>=2)){
@@ -234,21 +280,37 @@ int main(){
                   portal_r-=0.002;
                   reload_time_portal=0;
               }
-        portal_sprite.rotate(1);
-        portal_sprite.setPosition(100, 100);
-        window.draw(portal_sprite);
-        portal_sprite.setPosition(700, 100);
-        window.draw(portal_sprite);
-    }
 
+            portal_sprite.rotate(1);
+            portal_sprite.setPosition(100, 100);
+            window.draw(portal_sprite);
+            portal_sprite.setPosition(700, 100);
+            window.draw(portal_sprite);
+        }
 
+        //draw asteroid field
+        if (level2_start){
 
+            for (int i=1;i<=12;i++){
+                for (int j=1;j<=16;j++){
+                    int random=rand()%10;
+                    asteroid_small_sprite.rotate(36*random);
+                    if (asteroid_field[i][j]){
+                        asteroid_small_sprite.setPosition(j*50-5,(i-shift)*50-25);
+                        window.draw(asteroid_small_sprite);
+                    }
+                }
+            }
+
+        }
 
 
 		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
-        for(en=enemies.begin(); en != enemies.end(); en++) window.draw(en->sprite);
+        for(en=enemies.begin(); en != enemies.end(); en++){
+            window.draw(en->sprite);
+        }
 		//enemy.move(time);
-
+        //if(destroyed())
 		window.draw(player.sprite);
 		window.display();
 	}
