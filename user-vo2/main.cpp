@@ -74,7 +74,7 @@ bool is_non_visible (SimpleBullet value) {
 
 
 
-//void level(float ,float );
+
 
 
 
@@ -139,7 +139,8 @@ int main(){
     portal_sprite.setOrigin(93, 82);
     portal_sprite.setScale(portal_r,portal_r);
     int count=0;
-    bool portal_close=false,portal_open=false,level2_start=false;
+    float shift=-50;
+    bool portal_close=false,portal_open=false,level2_start=false,first_time=true;
     std::vector <std::vector <bool>  > asteroid_field (25);
 
     //работа с полем астероидов
@@ -149,22 +150,25 @@ int main(){
     asteroid_small_texture.loadFromFile(asteroid_small_file);
     asteroid_small_sprite.setTexture(asteroid_small_texture);
     asteroid_small_sprite.setOrigin(250,250);
-    asteroid_small_sprite.setScale(0.5,0.5);
-    for (int i=1;i<=120;i++){
+    asteroid_small_sprite.setScale(0.65,0.65);
+    for (int i=1;i<=24;i++){
         int limit=0;
-        for (int j=1;j<=80;j++){
+        for (int j=1;j<=16;j++){
             int random=rand()%2;
             if(random==1) {
-                asteroid_field[i].push_back(true);
-                limit++;
+                if (limit==1){
+                    limit=0;
+                    asteroid_field[i].push_back(false);
+                }
+                else {
+                    asteroid_field[i].push_back(true);
+                    limit++;
+                }
             }
             else{
                 asteroid_field[i].push_back(false);
             }
-            if (limit==3){
-                limit=0;
-                asteroid_field[i][j]=false;
-            }
+
         }
     }
 
@@ -240,18 +244,18 @@ int main(){
 
        // level 1 finish
 
-        if (enemies.empty()){
+        if (enemies.empty() && portal_close){
             level2_start=true;
         }
 
         //level 2 start
 
-        int shift =12;
+
         if (level2_start) {
 
             if (reload_time_shift >= 1) {
                 reload_time_shift = 0;
-                shift++;
+                shift+=0.05;
             }
         }
 
@@ -291,17 +295,21 @@ int main(){
         //draw asteroid field
         if (level2_start){
 
-            for (int i=1;i<=12;i++){
+            for (int i=1;i<=24;i++){
                 for (int j=1;j<=16;j++){
-                    int random=rand()%10;
-                    asteroid_small_sprite.rotate(36*random);
+
+                    if (first_time){
+                        int random=rand()%10;
+                        asteroid_small_sprite.rotate(36*random);
+                    }
+
                     if (asteroid_field[i][j]){
-                        asteroid_small_sprite.setPosition(j*50-5,(i-shift)*50-25);
+                        asteroid_small_sprite.setPosition(j*50-30,(i+shift)*50-25);
                         window.draw(asteroid_small_sprite);
                     }
                 }
             }
-
+            first_time=false;
         }
 
 
