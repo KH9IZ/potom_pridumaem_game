@@ -11,7 +11,7 @@
 
 using namespace sf;
 
-std::string sound_path = "../music_and_sound/";  // Music/sound path;
+std::string sound_path = "asd/music_and_sound/";  // Music/sound path;
 std::string img_path="../images/";
 
 RenderWindow window(VideoMode(800,600), "Potom Pridumaem");
@@ -222,6 +222,28 @@ void Menu()
     }
 }
 
+void GameOver()
+{
+    Texture GO;
+    Event event{};
+    GO.loadFromFile(img_path+"gameover.png");
+    Sprite gameover;
+    gameover.setTexture(GO);
+    while (window.isOpen())
+    {
+        while (window.pollEvent(event))
+        {
+            if (event.type == Event::Closed)
+                window.close();
+            if (event.type == Event::KeyPressed)
+                return;
+        }
+        window.clear();
+        window.draw(gameover);
+        window.display();
+    }
+}
+
 int main(){
 
 	Event event;
@@ -306,6 +328,7 @@ int main(){
 
 
     StartPicture();
+    menu:
     Menu();
     while (window.isOpen())
     {
@@ -390,6 +413,10 @@ int main(){
                 shift+=0.005;
             }
         }
+        std::cout<<shift<<std::endl;
+
+        if (shift>30)
+            break;
 
         //level 2 finish
 
@@ -457,6 +484,9 @@ int main(){
         window.draw(player.sprite);
         window.display();
     }
+    GameOver();
+    shift=-50;
+    goto menu;
 	return 0;
 }
 
