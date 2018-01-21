@@ -37,7 +37,7 @@ void explode(float x,float y){
     {
         score+=1000000;// тут что делать после взрыва
     }
-    texture_Explode.loadFromFile(img_path + std::to_string(int(currentFrame)) + "stage.png") ;
+   // texture_Explode.loadFromFile(img_path + std::to_string(int(currentFrame)) + "stage.png") ;
 }
 
 bool destroyed (Enemy value)
@@ -63,12 +63,6 @@ bool is_non_visible (SimpleBullet value) {
     }
     else return value.y < 0 || value.x < 0 || value.x > window.getSize().x || value.y > window.getSize().y;
 }
-
-bool is_non_visible_menu (SimpleBullet value) {
-    return value.y < 0 || value.x < 0 || value.x > window.getSize().x || value.y > window.getSize().y;
-}
-
-
 
 void StartPicture()
 {
@@ -298,7 +292,7 @@ int main(){
 
         if((!portal_open) && (portal_r<=1) && (reload_time_portal>=2)){
             portal_sprite.setScale(portal_r,portal_r);
-            portal_r+=0.002;
+            portal_r+=0.0002;
             reload_time_portal=0;
         }
         else{
