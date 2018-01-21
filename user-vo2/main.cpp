@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <list>
 #include "Entity.h"
 #include "Player.h"
@@ -14,7 +15,7 @@ std::list<Enemy>::iterator en ;
 
 using namespace sf;
 
-
+std::string sound_path = "C:/potom_pridumaem_game/music_and_sound/";  // Music/sound path;
 std::string img_path = "C:/potom_pridumaem_game/images/";  // Image path;
 
 Player player(img_path+"player.png",500,350,5,5,100); // Spawn player
@@ -24,7 +25,6 @@ SimpleBullet bullet_right (img_path+"player_bullet.png", player.x, player.y, 5, 
 
 //Enemy enemy(img_path+"Enemy.png", 50, 50,50, 50, 0.05); // Spawn enemy
 Enemy left (img_path+"dt2.png", 100, 100,50, 50, 0.05);
-
 Enemy right (img_path+"dt2.png", 700, 100 ,50, 50, -0.05);
 
 float timer=0;
@@ -120,7 +120,11 @@ int main(){
     bullet_right.sprite.setScale(0.5,0.5);
     int player_hp=5;
 	std::list<SimpleBullet> bullets{}; // list of all bullets on the screen
-
+    Music The_Final_Countdown;
+    std::string The_Final_Countdown_file=sound_path+"The_Final_Countdown_8_Bit.ogg";
+    The_Final_Countdown.openFromFile(The_Final_Countdown_file);
+    The_Final_Countdown.play();
+    The_Final_Countdown.setLoop(true);
 
 	Texture background, backgroundR;
 	Sprite backgroundS, backgroundSR;
