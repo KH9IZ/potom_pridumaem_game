@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <list>
 #include "Entity.h"
 #include "Player.h"
@@ -14,17 +15,16 @@ std::list<Enemy>::iterator en ;
 
 using namespace sf;
 
-
+std::string sound_path = "C:/potom_pridumaem_game/music_and_sound/";  // Music/sound path;
 std::string img_path = "C:/potom_pridumaem_game/images/";  // Image path;
 
-Player player(img_path+"player.png",0,0,5,5,100); // Spawn player
+Player player(img_path+"player.png",500,350,5,5,100); // Spawn player
 
-SimpleBullet bullet(img_path+"bullet.png", player.x, player.y, 5, 5, 0.25); // Create bullet
-
+SimpleBullet bullet_left (img_path+"player_bullet.png", player.x, player.y, 5, 5, 0.25); // Create bullet
+SimpleBullet bullet_right (img_path+"player_bullet.png", player.x, player.y, 5, 5, 0.25); // Create bullet
 
 //Enemy enemy(img_path+"Enemy.png", 50, 50,50, 50, 0.05); // Spawn enemy
 Enemy left (img_path+"dt2.png", 100, 100,50, 50, 0.05);
-
 Enemy right (img_path+"dt2.png", 700, 100 ,50, 50, -0.05);
 
 float timer=0;
@@ -114,9 +114,17 @@ int main(){
 	Event event{};
 	Clock clock;
 	float reload_time = 0,reload_time_enemies=0 ,reload_time_portal=0,reload_time_shift=0;
-
+    bullet_left.sprite.setOrigin(25,25);
+    bullet_left.sprite.setScale(0.5,0.5);
+    bullet_right.sprite.setOrigin(25,25);
+    bullet_right.sprite.setScale(0.5,0.5);
+    int player_hp=5;
 	std::list<SimpleBullet> bullets{}; // list of all bullets on the screen
-
+    Music The_Final_Countdown;
+    std::string The_Final_Countdown_file=sound_path+"The_Final_Countdown_8_Bit.ogg";
+    The_Final_Countdown.openFromFile(The_Final_Countdown_file);
+    The_Final_Countdown.play();
+    The_Final_Countdown.setLoop(true);
 
 	Texture background, backgroundR;
 	Sprite backgroundS, backgroundSR;
@@ -142,6 +150,11 @@ int main(){
     float shift=-50;
     bool portal_close=false,portal_open=false,level2_start=false,first_time=true;
     std::vector <std::vector <bool>  > asteroid_field (25);
+    Texture hp_texture;
+    Sprite hp_sprite;
+    std::string hp_file = img_path+"hp.png";
+    hp_texture.loadFromFile(hp_file);
+    hp_sprite.setTexture(hp_texture);
 
     //работа с полем астероидов
     Texture asteroid_small_texture;
@@ -178,8 +191,10 @@ int main(){
 	while (window.isOpen())
 	{
 		// Задаём начальную координату пули
-		bullet.x=player.x+player.texture.getSize().x/2-4;
-		bullet.y=player.y+player.texture.getSize().y/2-4;
+		bullet_left.x=player.x+player.texture.getSize().x/2-15;
+		bullet_left.y=player.y+player.texture.getSize().y/2-4;
+        bullet_right.x=player.x+player.texture.getSize().x/2+15;
+        bullet_right.y=player.y+player.texture.getSize().y/2-4;
        // float timer;
 		// Работа с временем
         timer=clock.getElapsedTime().asMicroseconds();
@@ -198,7 +213,8 @@ int main(){
 		}
 
         if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time>=50000)){
-            bullets.push_back(bullet);
+            bullets.push_back(bullet_left);
+            bullets.push_back(bullet_right);
             reload_time = 0;
         }
 
@@ -244,6 +260,8 @@ int main(){
 
        // level 1 finish
 
+
+
         if (enemies.empty() && portal_close){
             level2_start=true;
         }
@@ -275,6 +293,18 @@ int main(){
         //draw background
         window.draw(backgroundS);
         window.draw(backgroundSR);
+
+        //draw enemies
+        for(en=enemies.begin(); en != enemies.end(); en++){
+            window.draw(en->sprite);
+        }
+
+        //draw hp
+        for (int i=0;i<player_hp;i++){
+            hp_sprite.setPosition(700+i*20,580);
+            window.draw(hp_sprite);
+        }
+
 
         //draw portals
         if (count<=10)  {
@@ -314,9 +344,7 @@ int main(){
 
 
 		for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
-        for(en=enemies.begin(); en != enemies.end(); en++){
-            window.draw(en->sprite);
-        }
+
 		//enemy.move(time);
         //if(destroyed())
 		window.draw(player.sprite);
