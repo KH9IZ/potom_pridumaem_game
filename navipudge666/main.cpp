@@ -229,13 +229,17 @@ void GameOver()
     GO.loadFromFile(img_path+"gameover.png");
     Sprite gameover;
     gameover.setTexture(GO);
+    float time=0; Clock exit;
     while (window.isOpen())
     {
+
+        time=exit.getElapsedTime().asSeconds();
+        std::cout<<time<<std::endl;
         while (window.pollEvent(event))
         {
             if (event.type == Event::Closed)
                 window.close();
-            if (event.type == Event::KeyPressed)
+            if (time >= 3 && event.type == Event::KeyPressed)
                 return;
         }
         window.clear();
@@ -328,165 +332,162 @@ int main(){
 
 
     StartPicture();
-    menu:
     Menu();
     while (window.isOpen())
     {
+        while (window.isOpen()) {
 
-        // Задаём начальную координату пули
-        bullet_left.x=player.x+player.texture.getSize().x/2-15;
-        bullet_left.y=player.y+player.texture.getSize().y/2-4;
-        bullet_right.x=player.x+player.texture.getSize().x/2+15;
-        bullet_right.y=player.y+player.texture.getSize().y/2-4;
+            // Задаём начальную координату пули
+            bullet_left.x = player.x + player.texture.getSize().x / 2 - 15;
+            bullet_left.y = player.y + player.texture.getSize().y / 2 - 4;
+            bullet_right.x = player.x + player.texture.getSize().x / 2 + 15;
+            bullet_right.y = player.y + player.texture.getSize().y / 2 - 4;
 
-        // Работа с временем
-        float time=clock.getElapsedTime().asMicroseconds();
-        reload_time += clock.getElapsedTime().asMicroseconds();
-        reload_time_enemies += clock.getElapsedTime().asMicroseconds();
-        reload_time_portal+=clock.getElapsedTime().asMicroseconds();
-        reload_time_shift+=clock.getElapsedTime().asMicroseconds();
-        clock.restart();
-        time=time/200;
+            // Работа с временем
+            float time = clock.getElapsedTime().asMicroseconds();
+            reload_time += clock.getElapsedTime().asMicroseconds();
+            reload_time_enemies += clock.getElapsedTime().asMicroseconds();
+            reload_time_portal += clock.getElapsedTime().asMicroseconds();
+            reload_time_shift += clock.getElapsedTime().asMicroseconds();
+            clock.restart();
+            time = time / 200;
 
-        // Обработка событий
-        while (window.pollEvent(event))
-        {
-            if (event.type == Event::Closed)
-                window.close();
-        }
-
-
-        if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time>=50000)){
-            bullets.push_back(bullet_left);
-            bullets.push_back(bullet_right);
-            reload_time = 0;
-        }
-        player.control(time);
-        std::list<SimpleBullet>::iterator it;
-        for(it=bullets.begin(); it != bullets.end(); it++) it->move(time);
-        bullets.remove_if(is_non_visible);
-
-
-        //level 1 start
-
-        if((!portal_open) && (portal_r<=1) && (reload_time_portal>=2)){
-            portal_sprite.setScale(portal_r,portal_r);
-            portal_r+=0.0002;
-            reload_time_portal=0;
-        }
-        else{
-            portal_open=true;
-        }
-
-        if (portal_open) {
-            if ((count < 10) && (reload_time_enemies >= 5000000)) {
-                enemies.push_back(left);
-                enemies.push_back(right);
-                count += 2;
-                reload_time_enemies = 0;
-            }
-        }
-
-        if (count==10){
-            portal_close=true;
-        }
-
-        for (en=enemies.begin(); en != enemies.end(); en++){
-            en->move(time);
-        }
-
-        enemies.remove_if(destroyed);
-
-        // level 1 finish
-
-        if (enemies.empty() && portal_close){
-            level2_start=true;
-        }
-
-        //level 2 start
-
-
-        if (level2_start) {
-
-            if (reload_time_shift >= 1) {
-                reload_time_shift = 0;
-                shift+=0.005;
-            }
-        }
-        std::cout<<shift<<std::endl;
-
-        if (shift>30)
-            break;
-
-        //level 2 finish
-
-        backgroundS.move(0,0.1*time);
-        backgroundSR.move(0,0.1*time);
-        if(backgroundS.getPosition().y>800)
-            backgroundS.setPosition(0,-3200);
-        if(backgroundSR.getPosition().y>800)
-            backgroundSR.setPosition(0,-3200);
-
-        window.clear();
-        window.draw(backgroundS);
-        window.draw(backgroundSR);
-
-        //draw enemies
-        for(en=enemies.begin(); en != enemies.end(); en++){
-            window.draw(en->sprite);
-        }
-
-        //draw hp
-        for (int i=0;i<player_hp;i++){
-            hp_sprite.setPosition(700+i*20,580);
-            window.draw(hp_sprite);
-        }
-
-
-        //draw portals
-        if (count<=10)  {
-
-            if((portal_close) && (portal_r>=0) && (reload_time_portal>=2)){
-                portal_sprite.setScale(portal_r,portal_r);
-                portal_r-=0.002;
-                reload_time_portal=0;
+            // Обработка событий
+            while (window.pollEvent(event)) {
+                if (event.type == Event::Closed)
+                    window.close();
             }
 
-            portal_sprite.rotate(1);
-            portal_sprite.setPosition(100, 100);
-            window.draw(portal_sprite);
-            portal_sprite.setPosition(700, 100);
-            window.draw(portal_sprite);
-        }
 
-        //draw asteroid field
-        if (level2_start){
+            if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time >= 50000)) {
+                bullets.push_back(bullet_left);
+                bullets.push_back(bullet_right);
+                reload_time = 0;
+            }
+            player.control(time);
+            std::list<SimpleBullet>::iterator it;
+            for (it = bullets.begin(); it != bullets.end(); it++) it->move(time);
+            bullets.remove_if(is_non_visible);
 
-            for (int i=1;i<=24;i++){
-                for (int j=1;j<=16;j++){
 
-                    if (first_time){
-                        int random=rand()%10;
-                        asteroid_small_sprite.rotate(36*random);
-                    }
+            //level 1 start
 
-                    if (asteroid_field[i][j]){
-                        asteroid_small_sprite.setPosition(j*50-30,(i+shift)*50-25);
-                        window.draw(asteroid_small_sprite);
-                    }
+            if ((!portal_open) && (portal_r <= 1) && (reload_time_portal >= 2)) {
+                portal_sprite.setScale(portal_r, portal_r);
+                portal_r += 0.0002;
+                reload_time_portal = 0;
+            } else {
+                portal_open = true;
+            }
+
+            if (portal_open) {
+                if ((count < 10) && (reload_time_enemies >= 5000000)) {
+                    enemies.push_back(left);
+                    enemies.push_back(right);
+                    count += 2;
+                    reload_time_enemies = 0;
                 }
             }
-            first_time=false;
+
+            if (count == 10) {
+                portal_close = true;
+            }
+
+            for (en = enemies.begin(); en != enemies.end(); en++) {
+                en->move(time);
+            }
+
+            enemies.remove_if(destroyed);
+
+            // level 1 finish
+
+            if (enemies.empty() && portal_close) {
+                level2_start = true;
+            }
+
+            //level 2 start
+
+
+            if (level2_start) {
+
+                if (reload_time_shift >= 1) {
+                    reload_time_shift = 0;
+                    shift += 0.005;
+                }
+            }
+
+            if (shift > 30)
+                break;
+
+            //level 2 finish
+
+            backgroundS.move(0, 0.1 * time);
+            backgroundSR.move(0, 0.1 * time);
+            if (backgroundS.getPosition().y > 800)
+                backgroundS.setPosition(0, -3200);
+            if (backgroundSR.getPosition().y > 800)
+                backgroundSR.setPosition(0, -3200);
+
+            window.clear();
+            window.draw(backgroundS);
+            window.draw(backgroundSR);
+
+            //draw enemies
+            for (en = enemies.begin(); en != enemies.end(); en++) {
+                window.draw(en->sprite);
+            }
+
+            //draw hp
+            for (int i = 0; i < player_hp; i++) {
+                hp_sprite.setPosition(700 + i * 20, 580);
+                window.draw(hp_sprite);
+            }
+
+
+            //draw portals
+            if (count <= 10) {
+
+                if ((portal_close) && (portal_r >= 0) && (reload_time_portal >= 2)) {
+                    portal_sprite.setScale(portal_r, portal_r);
+                    portal_r -= 0.002;
+                    reload_time_portal = 0;
+                }
+
+                portal_sprite.rotate(1);
+                portal_sprite.setPosition(100, 100);
+                window.draw(portal_sprite);
+                portal_sprite.setPosition(700, 100);
+                window.draw(portal_sprite);
+            }
+
+            //draw asteroid field
+            if (level2_start) {
+
+                for (int i = 1; i <= 24; i++) {
+                    for (int j = 1; j <= 16; j++) {
+
+                        if (first_time) {
+                            int random = rand() % 10;
+                            asteroid_small_sprite.rotate(36 * random);
+                        }
+
+                        if (asteroid_field[i][j]) {
+                            asteroid_small_sprite.setPosition(j * 50 - 30, (i + shift) * 50 - 25);
+                            window.draw(asteroid_small_sprite);
+                        }
+                    }
+                }
+                first_time = false;
+            }
+
+            for (it = bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
+
+            window.draw(player.sprite);
+            window.display();
         }
-
-        for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
-
-        window.draw(player.sprite);
-        window.display();
+        GameOver();
+        shift = -50;
     }
-    GameOver();
-    shift=-50;
-    goto menu;
 	return 0;
 }
 
