@@ -8,36 +8,27 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <iostream>
-
+//#include <vector>
 using namespace sf;
 
 class Explosion {
 
 
 public:
-    Texture texture1,texture2,texture3,texture4,texture5,texture6;
-    Sprite sprite1,sprite2,sprite3,sprite4,sprite5,sprite6;
+    Texture texture;
+    Sprite sprite;
+    int i=1;
+    bool explosion_finished=false;
+   // std::vector <std::string> v;
 
     Explosion(const std::string &file, float x,float y)
     {
-        texture1.loadFromFile(file+"stage1");
-        texture2.loadFromFile(file+"stage2");
-        texture3.loadFromFile(file+"stage3");
-        texture4.loadFromFile(file+"stage4");
-        texture5.loadFromFile(file+"stage5");
-        texture6.loadFromFile(file+"stage6");
-        sprite1.setTexture(texture1);
-        sprite2.setTexture(texture2);
-        sprite3.setTexture(texture3);
-        sprite4.setTexture(texture4);
-        sprite5.setTexture(texture5);
-        sprite6.setTexture(texture6);
-        sprite1.setPosition(x,y);
-        sprite2.setPosition(x,y);
-        sprite3.setPosition(x,y);
-        sprite4.setPosition(x,y);
-        sprite5.setPosition(x,y);
-        sprite6.setPosition(x,y);
+        std::string str= std::to_string(i);
+        std::string file_exp=file+"stage"+str;
+        texture.loadFromFile(file_exp);
+        sprite.setTexture(texture);
+        sprite.setPosition(x,y);
+
     }
 };
 

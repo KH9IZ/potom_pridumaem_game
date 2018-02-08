@@ -11,10 +11,11 @@ class SimpleBullet: public Entity {
 public:
 
     SimpleBullet(const std::string &file, float X, float Y, float W, float H, double SPEED) : Entity(file, X, Y, W, H, SPEED) {}
-
-    void move(double time){
-        //sprite.setOrigin(])
-        y -= speed*time;
+    double speed_x,speed_y;
+    void move(double time/*, float speed_x,float speed_y*/){
+        //sprite.setOrigin
+        x +=speed_x*time;
+        y +=speed_y*time;
         sprite.setPosition(x, y);
     }
 };

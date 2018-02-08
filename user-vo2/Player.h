@@ -12,7 +12,7 @@ class Player: public Entity
 {
 	public:
 		Player(std::string file,double X,double Y, double W, double H,double SPEED): Entity(file, X, Y, W, H, SPEED) {}
-
+		int hp=5;
 
 		void cok()
 		{
