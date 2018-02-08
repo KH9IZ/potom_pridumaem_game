@@ -5,13 +5,13 @@
 #include <SFML/Audio.hpp>
 #include "../navipudge666/Entity.h"
 #include "../navipudge666/Player.h"
-#include "../navipudge666/SimpleBullet.h"
+#include "../navipudge666/SimpleBullet1.h"
 #include "../navipudge666/Enemy.h"
 
 
 using namespace sf;
 
-std::string sound_path = "asd/music_and_sound/";  // Music/sound path;
+std::string sound_path = "../music_and_sound/";  // Music/sound path;
 std::string img_path="../images/";
 
 RenderWindow window(VideoMode(800,600), "Potom Pridumaem");
@@ -21,12 +21,15 @@ Player player(img_path+"player.png",0,0,5,5,1.5/100);
 SimpleBullet bullet_left (img_path+"player_bullet.png", player.x, player.y, 5, 5, 0.25); // Create bullet
 SimpleBullet bullet_right (img_path+"player_bullet.png", player.x, player.y, 5, 5, 0.25); // Create bullet
 
-Enemy left (img_path+"MPW.png", 100, 100,50, 50, 0.05);
-
-Enemy right (img_path+"MPW.png", 700, 100 ,50, 50, -0.05);
-
+SimpleBullet enemy_bullet (img_path+"bullet.png", 0, 0, 5, 5, 0.25);
+//Enemy enemy(img_path+"Enemy.png", 50, 50,50, 50, 0.05); // Spawn enemy
+Enemy left (img_path+"dt2.png", 100, 100,50, 50, 0.05);
+Enemy right (img_path+"dt2.png", 700, 100 ,50, 50, -0.05);
+Enemy Boss  (img_path+"Boss.png", 300, 250 ,50, 50, 0.1);
+bool shield=false;
 float timer=0;
 int score=0;
+
 
 std::list<Enemy> enemies{};// list of all enemies on screen
 std::list<Enemy>::iterator en ;
@@ -35,6 +38,7 @@ Texture texture_Explode;
 
 float currentFrame = 1.0;
 
+/*
 void explode(float x,float y){
     currentFrame += 0.5 * timer;
     if (currentFrame>6)
@@ -42,12 +46,12 @@ void explode(float x,float y){
         score+=1000000;// тут что делать после взрыва
     }
    // texture_Explode.loadFromFile(img_path + std::to_string(int(currentFrame)) + "stage.png") ;
-}
+}*/
 
 bool destroyed (Enemy value)
 {
     if (value.hp<=0){
-        explode(value.x,value.y);
+        score+=1000000;
         return true;
     }return false;
 
@@ -61,11 +65,30 @@ bool is_non_visible (SimpleBullet value) {
         if (value.y < 0 || value.x < 0 || value.x > window.getSize().x || value.y > window.getSize().y) return true;
         else if (value.sprite.getGlobalBounds().intersects(en->sprite.getGlobalBounds())) {
             // en->sprite.setScale(0, 0);
-            en->hp-=25;
+            en->hp-=5;
             return true;
         } else return false;
     }
     else return value.y < 0 || value.x < 0 || value.x > window.getSize().x || value.y > window.getSize().y;
+}
+
+bool is_invisible (SimpleBullet value) {
+    if (player.hp!=0)
+
+        //std::advance(en,enemy);
+        if (value.y < 0 || value.x < 0 || value.x > window.getSize().x || value.y > window.getSize().y) return true;
+        else if (value.sprite.getGlobalBounds().intersects(player.sprite.getGlobalBounds())) {
+            // en->sprite.setScale(0, 0);
+            player.hp-=1;
+            return true;
+        } else return false;
+
+    else return value.y < 0 || value.x < 0 || value.x > window.getSize().x || value.y > window.getSize().y;
+}
+
+bool cmp_enemies(Enemy a, Enemy b)
+{
+    return a.sprite.getPosition().y < b.sprite.getPosition().y;
 }
 
 void StartPicture()
@@ -110,6 +133,7 @@ void Menu()
 
     SimpleBullet Bullet(img_path+"bullet.png", player.x, player.y, 5, 5, 0.1);
     std::list<SimpleBullet> bullets{};
+    Bullet.speed_y=-0.1;
 
     Texture MenuBG; Sprite MenuBGsprite;
     MenuBG.loadFromFile(img_path+"menu.png");
@@ -149,6 +173,7 @@ void Menu()
 
         if (Keyboard::isKeyPressed((Keyboard::Q)))
             return;
+
 
         std::list<SimpleBullet>::iterator it;
         for(it=bullets.begin(); it != bullets.end(); it++)
@@ -252,19 +277,40 @@ int main(){
 
 	Event event;
 	Clock clock;
-    float reload_time, reload_time_enemies=0 ,reload_time_portal=0, reload_time_shift=0;
+    float reload_time = 0,reload_time_enemies=0 ,reload_time_portal=0,reload_time_shift=0,shield_timer=0,reload_time_stop=0, player_shield=0;
+
     bullet_left.sprite.setOrigin(25,25);
     bullet_left.sprite.setScale(0.5,0.5);
     bullet_right.sprite.setOrigin(25,25);
     bullet_right.sprite.setScale(0.5,0.5);
-    int player_hp=5;                //поменять
 
     std::list<SimpleBullet> bullets{}; // list of all bullets on the screen
+    std::list<SimpleBullet> enemy_bullets{}; // list of all enemy bullets on the screen
     Music The_Final_Countdown;
     std::string The_Final_Countdown_file=sound_path+"The_Final_Countdown_8_Bit.ogg";
     The_Final_Countdown.openFromFile(The_Final_Countdown_file);
-    The_Final_Countdown.play();
-    The_Final_Countdown.setLoop(true);
+    //The_Final_Countdown.play();
+  //  The_Final_Countdown.setLoop(true);
+
+
+    Music randomtrack;
+    Music track_1;
+    Music track_2;
+    Music track_3;
+    track_1.openFromFile(sound_path+"track_0.ogg");
+    track_2.openFromFile(sound_path+"track_1.ogg");
+    track_3.openFromFile(sound_path+"track_2.ogg");
+    int track=1;
+    SoundBuffer buffer;
+    buffer.loadFromFile(sound_path+"shoot.ogg");// тут загружаем в буфер что то
+    Sound shoot;
+    shoot.setBuffer(buffer);
+    SoundBuffer buffer_2;
+    buffer_2.loadFromFile(sound_path+"shoot2.ogg");// тут загружаем в буфер что то
+    Sound shoot_2;
+    shoot.setBuffer(buffer_2);
+    track_2.play();
+    track_2.setLoop(true);
 
 	Texture background, backgroundR;
 	Sprite backgroundS, backgroundSR;
@@ -277,7 +323,15 @@ int main(){
 	backgroundSR.setScale(0.64,1);
 	backgroundSR.setPosition(0,-3200);
 
-    //работа с порталами
+    //работа с боссом
+    Boss.sprite.setScale(1,-1);
+    bool lasors=false;
+    Texture lasor_texture;
+    Sprite lasor_sprite;
+    lasor_texture.loadFromFile(img_path+"lasor.png");
+    lasor_sprite.setTexture(lasor_texture);
+
+    //работа с порталами и не только
     Texture portal_texture;
     Sprite portal_sprite;
     std::string Portal_file=img_path+"Portal.png";
@@ -287,8 +341,8 @@ int main(){
     portal_sprite.setOrigin(93, 82);
     portal_sprite.setScale(portal_r,portal_r);
     int count=0;
-    float shift=-50;
-    bool portal_close=false,portal_open=false,level2_start=false,first_time=true;
+    float shift=-50,direct=0.05;
+    bool portal_close=false,portal_open=false,level2_start=false,first_time=true,level3_start=false,phase_1=true,phase_2=false,phase_3=false,first_time_boss=true;
     std::vector <std::vector <bool>  > asteroid_field (25);
     Texture hp_texture;
     Sprite hp_sprite;
@@ -330,6 +384,12 @@ int main(){
     SimpleBullet Bullet(img_path+"bullet.png", player.x, player.y, 5, 5, 0.1);
    // std::list<SimpleBullet> bullets{};
 
+    bullet_left.speed_x=0;
+    bullet_right.speed_x=0;
+    bullet_left.speed_y=-0.25;
+    bullet_right.speed_y=-0.25;
+    left.sprite.setOrigin(51,51);
+    right.sprite.setOrigin(51,51);
 
     StartPicture();
     Menu();
@@ -344,13 +404,19 @@ int main(){
             bullet_right.y = player.y + player.texture.getSize().y / 2 - 4;
 
             // Работа с временем
-            float time = clock.getElapsedTime().asMicroseconds();
+            timer=clock.getElapsedTime().asMicroseconds();
             reload_time += clock.getElapsedTime().asMicroseconds();
             reload_time_enemies += clock.getElapsedTime().asMicroseconds();
-            reload_time_portal += clock.getElapsedTime().asMicroseconds();
-            reload_time_shift += clock.getElapsedTime().asMicroseconds();
+            reload_time_portal+=clock.getElapsedTime().asMicroseconds();
+            reload_time_shift+=clock.getElapsedTime().asMicroseconds();
+            reload_time_stop+=clock.getElapsedTime().asMicroseconds();
+            player_shield+=clock.getElapsedTime().asSeconds();
+            if (shield){
+                shield_timer+=clock.getElapsedTime().asMicroseconds();
+            }
+
             clock.restart();
-            time = time / 200;
+            timer=timer/200;
 
             // Обработка событий
             while (window.pollEvent(event)) {
@@ -359,17 +425,36 @@ int main(){
             }
 
 
-            if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time >= 50000)) {
+            if (Keyboard::isKeyPressed(Keyboard::Z) && (reload_time>=50000)){
                 bullets.push_back(bullet_left);
                 bullets.push_back(bullet_right);
+                shoot.play();
                 reload_time = 0;
             }
-            player.control(time);
+
+
+            player.control(timer);
+
+            if (player.sprite.getGlobalBounds().intersects(asteroid_small_sprite.getGlobalBounds())){
+                player.hp--;
+                player.sprite.setColor(Color::Red);
+            }
+            if (player.hp<=0){
+                GameOver();
+            }
             std::list<SimpleBullet>::iterator it;
-            for (it = bullets.begin(); it != bullets.end(); it++) it->move(time);
+            std::list<SimpleBullet>::iterator enbu;
+            enemies.sort((enemies.begin(), enemies.end(), cmp_enemies));
+            for(it=bullets.begin(); it != bullets.end(); it++) {
+                it->move(timer);
+            }
+            for(enbu=enemy_bullets.begin(); enbu != enemy_bullets.end(); enbu++) {
+                enbu->move(timer);
+            }
             bullets.remove_if(is_non_visible);
+            enemy_bullets.remove_if(is_invisible);
 
-
+/*
             //level 1 start
 
             if ((!portal_open) && (portal_r <= 1) && (reload_time_portal >= 2)) {
@@ -381,20 +466,32 @@ int main(){
             }
 
             if (portal_open) {
-                if ((count < 10) && (reload_time_enemies >= 5000000)) {
+                if ((count < 20) && (reload_time_enemies >= 3000000)) {
                     enemies.push_back(left);
                     enemies.push_back(right);
+                    left.speed_x=-left.speed_x;
+                    right.speed_x=-right.speed_x;
                     count += 2;
                     reload_time_enemies = 0;
                 }
             }
 
-            if (count == 10) {
+            if (count == 20) {
                 portal_close = true;
             }
 
-            for (en = enemies.begin(); en != enemies.end(); en++) {
-                en->move(time);
+            for (en=enemies.begin(); en != enemies.end(); en++){
+                en->move_enemy(timer,0 ,0);
+                en->reload_shoot+=timer*200;
+                if (en->reload_shoot>=1000000){
+                    en->reload_shoot=0;
+                    enemy_bullet.speed_x=-(en->x-player.x)/(fabsf(en->x-player.x))*0.025;
+                    enemy_bullet.speed_y=-(en->y-player.y)/(fabsf(en->y-player.y))*0.025;
+                    enemy_bullet.x=en->x;
+                    enemy_bullet.y=en->y;
+                    enemy_bullets.push_back(enemy_bullet);
+                }
+                //en->sprite.setRotation(en->angle);
             }
 
             enemies.remove_if(destroyed);
@@ -412,17 +509,43 @@ int main(){
 
                 if (reload_time_shift >= 1) {
                     reload_time_shift = 0;
-                    shift += 0.005;
+                    shift+=0.005;
                 }
             }
-
-            if (shift > 30)
-                break;
+            if (shift>=50){
+                level2_start=false;
+                level3_start=true;
+            }
 
             //level 2 finish
+*/
+            //level 3 start
 
-            backgroundS.move(0, 0.1 * time);
-            backgroundSR.move(0, 0.1 * time);
+            level3_start=true; phase_1=true;
+        if (level3_start)
+        {
+            if (phase_1)
+            {
+                if ((Boss.speed>0 && Boss.x>600) || (Boss.speed<0 && Boss.x<000))
+                    Boss.speed=-Boss.speed;
+                Boss.x+=Boss.speed*timer;
+                Boss.sprite.setPosition(Boss.x,Boss.y);
+            }
+           // if (phase_2){
+
+
+           // }
+           // if (phase_3){
+
+
+           // }
+
+        }
+
+            //level 3 finish
+
+            backgroundS.move(0, 0.1 * timer);
+            backgroundSR.move(0, 0.1 * timer);
             if (backgroundS.getPosition().y > 800)
                 backgroundS.setPosition(0, -3200);
             if (backgroundSR.getPosition().y > 800)
@@ -438,14 +561,14 @@ int main(){
             }
 
             //draw hp
-            for (int i = 0; i < player_hp; i++) {
-                hp_sprite.setPosition(700 + i * 20, 580);
+            for (int i=0;i<player.hp;i++){
+                hp_sprite.setPosition(700+i*20,580);
                 window.draw(hp_sprite);
             }
 
 
             //draw portals
-            if (count <= 10) {
+            if (count <= 20) {
 
                 if ((portal_close) && (portal_r >= 0) && (reload_time_portal >= 2)) {
                     portal_sprite.setScale(portal_r, portal_r);
@@ -458,6 +581,11 @@ int main(){
                 window.draw(portal_sprite);
                 portal_sprite.setPosition(700, 100);
                 window.draw(portal_sprite);
+            }
+
+            //draw enemies
+            for (en = enemies.begin(); en != enemies.end(); en++) {
+                window.draw(en->sprite);
             }
 
             //draw asteroid field
@@ -480,7 +608,22 @@ int main(){
                 first_time = false;
             }
 
-            for (it = bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
+
+            //draw lasors
+            if(lasors){
+                for (int i=0;i<2;i++){
+                    for (int k=0;k<=10;k++){
+                        lasor_sprite.setPosition(Boss.x+10,Boss.y+k*5);
+                        window.draw(lasor_sprite);
+                    }
+                }
+            }
+
+            if(level3_start){
+                window.draw(Boss.sprite);
+            }
+            for(it=bullets.begin(); it != bullets.end(); it++) window.draw(it->sprite);
+            for(enbu=enemy_bullets.begin(); enbu != enemy_bullets.end(); enbu++) window.draw(enbu->sprite);
 
             window.draw(player.sprite);
             window.display();
