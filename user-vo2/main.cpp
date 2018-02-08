@@ -190,7 +190,8 @@ int main(){
     buffer.loadFromFile(sound_path+"shoot2.ogg");// тут загружаем в буфер что то
     Sound shoot_2;
     shoot.setBuffer(buffer_2);
-
+    track_2.play();
+    track_2.setLoop(true);
 
     //background
 	Texture background, backgroundR;
@@ -223,7 +224,7 @@ int main(){
     portal_sprite.setScale(portal_r,portal_r);
     int count=0;
     float shift=-50,direct=0.05;
-    bool portal_close=false,portal_open=false,level2_start=false,first_time=true,level3_start=false,phase_1=true,phase_2=false,phase_3=false;
+    bool portal_close=false,portal_open=false,level2_start=false,first_time=true,level3_start=false,phase_1=true,phase_2=false,phase_3=false,first_time_boss=true;
     std::vector <std::vector <bool>  > asteroid_field (25);
     Texture hp_texture;
     Sprite hp_sprite;
@@ -289,8 +290,7 @@ int main(){
         }
 		clock.restart();
 		timer=timer/200;
-        track_2.play();
-        track_2.setLoop(true);
+
        // if (reload_time_music>=90000000){
           //  track++;
           //  if (track>=2) {
@@ -406,10 +406,13 @@ int main(){
         //level 3 start
 
         if (level3_start){
+            if(first_time_boss){
             track_2.setLoop(false);
             track_2.stop();
             The_Final_Countdown.play();
             The_Final_Countdown.setLoop(true);
+                first_time_boss=false;
+            }
             Boss.move_enemy(timer, 0, 0);
             if (phase_1){
                 if (reload_time_stop>=4) {
