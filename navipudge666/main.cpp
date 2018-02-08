@@ -17,6 +17,7 @@ std::string img_path="../images/";
 RenderWindow window(VideoMode(800,600), "Potom Pridumaem");
 
 Player player(img_path+"player.png",0,0,5,5,1.5/100);
+SimpleBullet boss_bullet (img_path+"boss_bullet.png", 0, 0, 5, 5, 0.15);
 
 SimpleBullet bullet_left (img_path+"player_bullet.png", player.x, player.y, 5, 5, 0.25); // Create bullet
 SimpleBullet bullet_right (img_path+"player_bullet.png", player.x, player.y, 5, 5, 0.25); // Create bullet
@@ -277,7 +278,7 @@ int main(){
 
 	Event event;
 	Clock clock;
-    float reload_time = 0,reload_time_enemies=0 ,reload_time_portal=0,reload_time_shift=0,shield_timer=0,reload_time_stop=0, player_shield=0;
+    float reload_time = 0,reload_time_enemies=0 ,reload_time_portal=0,reload_time_shift=0,shield_timer=0,reload_time_stop=0, player_shield=0,reload_time_boss_bullet=0;
 
     bullet_left.sprite.setOrigin(25,25);
     bullet_left.sprite.setScale(0.5,0.5);
@@ -411,6 +412,7 @@ int main(){
             reload_time_shift+=clock.getElapsedTime().asMicroseconds();
             reload_time_stop+=clock.getElapsedTime().asMicroseconds();
             player_shield+=clock.getElapsedTime().asSeconds();
+            reload_time_boss_bullet+=clock.getElapsedTime().asSeconds();
             if (shield){
                 shield_timer+=clock.getElapsedTime().asMicroseconds();
             }
@@ -524,6 +526,14 @@ int main(){
             level3_start=true; phase_1=true;
         if (level3_start)
         {
+            if (reload_time_boss_bullet>=4){
+                boss_bullet.x=Boss.x;
+                boss_bullet.y=Boss.y;
+                boss_bullet.speed_y=0.15;
+                enemy_bullets.push_back(boss_bullet);
+
+            }
+
             if (phase_1)
             {
                 if ((Boss.speed>0 && Boss.x>600) || (Boss.speed<0 && Boss.x<000))
