@@ -154,7 +154,7 @@ int main(){
 
 	Event event{};
 	Clock clock;
-	float reload_time = 0,reload_time_enemies=0 ,reload_time_portal=0,reload_time_shift=0,shield_timer=0,reload_time_stop=0;
+	float reload_time = 0,reload_time_enemies=0 ,reload_time_portal=0,reload_time_shift=0,shield_timer=0,reload_time_stop=0,reload_time_music=90000000;
     bullet_left.sprite.setOrigin(25,25);
     bullet_left.sprite.setScale(0.5,0.5);
     bullet_right.sprite.setOrigin(25,25);
@@ -165,12 +165,32 @@ int main(){
     Music The_Final_Countdown;
     std::string The_Final_Countdown_file=sound_path+"The_Final_Countdown_8_Bit.ogg";
     The_Final_Countdown.openFromFile(The_Final_Countdown_file);
-   // The_Final_Countdown.play();
+    //The_Final_Countdown.play();
     //The_Final_Countdown.setLoop(true);
+    Music randomtrack;
+    //std::vector <Music> music;
+    //std::string traack_1=sound_path+"track_0.ogg";
+    //std::string traack_2=sound_path+"track_1.ogg";
+    //std::string traack_3=sound_path+"track_2.ogg";
+    Music track_1;
+    Music track_2;
+    Music track_3;
+    track_1.openFromFile(sound_path+"track_0.ogg");
+    track_2.openFromFile(sound_path+"track_1.ogg");
+    track_3.openFromFile(sound_path+"track_2.ogg");
+    //music.push_back(track_1);
+    //music.push_back(track_2);
+    //music.push_back(track_3);
+    int track=1;
     SoundBuffer buffer;
-    buffer.loadFromFile(sound_path+"shoot2.ogg");// тут загружаем в буфер что то
+    buffer.loadFromFile(sound_path+"shoot.ogg");// тут загружаем в буфер что то
     Sound shoot;
     shoot.setBuffer(buffer);
+    SoundBuffer buffer_2;
+    buffer.loadFromFile(sound_path+"shoot2.ogg");// тут загружаем в буфер что то
+    Sound shoot_2;
+    shoot.setBuffer(buffer_2);
+
 
     //background
 	Texture background, backgroundR;
@@ -263,12 +283,27 @@ int main(){
         reload_time_portal+=clock.getElapsedTime().asMicroseconds();
         reload_time_shift+=clock.getElapsedTime().asMicroseconds();
         reload_time_stop+=clock.getElapsedTime().asMicroseconds();
+        reload_time_music+=clock.getElapsedTime().asMicroseconds();
         if (shield){
             shield_timer+=clock.getElapsedTime().asMicroseconds();
         }
 		clock.restart();
 		timer=timer/200;
+        track_2.play();
+        track_2.setLoop(true);
+       // if (reload_time_music>=90000000){
+          //  track++;
+          //  if (track>=2) {
+         //       track=0;
+          //  }
 
+           // music[track-1].stop();
+          //  music[track].play();
+
+            //randomtrack.setPlayingOffset(seconds(90));
+          //  reload_time_music=0;
+
+       // }
 		// Обработка событий
 		while (window.pollEvent(event))
 		{
@@ -336,6 +371,7 @@ int main(){
                 enemy_bullet.x=en->x;
                 enemy_bullet.y=en->y;
                 enemy_bullets.push_back(enemy_bullet);
+                shoot_2.play();
             }
             //en->sprite.setRotation(en->angle);
         }
@@ -368,8 +404,12 @@ int main(){
         //level 2 finish
 
         //level 3 start
-/*
+
         if (level3_start){
+            track_2.setLoop(false);
+            track_2.stop();
+            The_Final_Countdown.play();
+            The_Final_Countdown.setLoop(true);
             Boss.move_enemy(timer, 0, 0);
             if (phase_1){
                 if (reload_time_stop>=4) {
@@ -404,7 +444,7 @@ int main(){
            // }
 
         }
-*/
+
         //level 3 finish
 
         //background
