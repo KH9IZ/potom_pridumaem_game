@@ -11,8 +11,8 @@
 
 using namespace sf;
 
-std::string sound_path = "../music_and_sound/";  // Music/sound path;
-std::string img_path="../images/";
+std::string sound_path = "music_and_sound/";  // Music/sound path;
+std::string img_path="images/";
 
 RenderWindow window(VideoMode(800,600), "Potom Pridumaem");
 
@@ -20,12 +20,13 @@ Player player(img_path+"player.png",0,0,5,5,1.5/100);
 
 SimpleBullet bullet_left (img_path+"player_bullet.png", player.x, player.y, 5, 5, 0.25); // Create bullet
 SimpleBullet bullet_right (img_path+"player_bullet.png", player.x, player.y, 5, 5, 0.25); // Create bullet
+SimpleBullet boss_bullet (img_path+"boss_bullet1.png", 0, 0, 5, 5, 0.15);
 
 SimpleBullet enemy_bullet (img_path+"bullet.png", 0, 0, 5, 5, 0.25);
 //Enemy enemy(img_path+"Enemy.png", 50, 50,50, 50, 0.05); // Spawn enemy
 Enemy left (img_path+"dt2.png", 100, 100,50, 50, 0.05);
 Enemy right (img_path+"dt2.png", 700, 100 ,50, 50, -0.05);
-Enemy Boss  (img_path+"Boss.png", 300, 250 ,50, 50, 0.1);
+Enemy Boss  (img_path+"Boss.png", 200, 50 ,50, 50, 0.1);
 bool shield=false, level3=false;
 float timer=0;
 int score=0;
@@ -65,7 +66,6 @@ bool is_non_visible (SimpleBullet value) {
             Boss.hp-=5;
             return true;
         }
-    else
     if (enemies.size()!=0)
     for ( std::list<Enemy>::iterator en = enemies.begin() ; en != enemies.end(); en++ ) {
         //std::advance(en,enemy);
@@ -258,7 +258,9 @@ void GameOver()
 {
     Texture GO;
     Event event{};
-    GO.loadFromFile(img_path+"gameover.png");
+    if (Boss.hp<=0)
+        GO.loadFromFile(img_path+"gameover_won.png");
+    else GO.loadFromFile(img_path+"gameover_lose.png");
     Sprite gameover;
     gameover.setTexture(GO);
     float time=0; Clock exit;
@@ -284,7 +286,7 @@ int main(){
 
 	Event event;
 	Clock clock;
-    float reload_time = 0,reload_time_enemies=0 ,reload_time_portal=0,reload_time_shift=0,shield_timer=0,reload_time_stop=0, player_shield=0;
+    float reload_time = 0,reload_time_enemies=0 ,reload_time_portal=0,reload_time_shift=0,shield_timer=0,reload_time_stop=0, player_shield=0, reload_time_boss_bullet=0;
 
     bullet_left.sprite.setOrigin(25,25);
     bullet_left.sprite.setScale(0.5,0.5);
@@ -333,6 +335,8 @@ int main(){
     //работа с боссом
     Boss.sprite.setScale(1,-1);
     Boss.hp=5000;
+    Boss.sprite.setOrigin(97,175);
+    boss_bullet.sprite.setColor(Color::Yellow);
     bool lasors=false;
     Texture lasor_texture;
     Sprite lasor_sprite;
@@ -422,6 +426,7 @@ int main(){
             if (shield){
                 shield_timer+=clock.getElapsedTime().asMicroseconds();
             }
+            reload_time_boss_bullet+=clock.getElapsedTime().asMicroseconds();
 
             clock.restart();
             timer=timer/200;
@@ -462,7 +467,7 @@ int main(){
             bullets.remove_if(is_non_visible);
             enemy_bullets.remove_if(is_invisible);
 
-/*
+
             //level 1 start
 
             if ((!portal_open) && (portal_r <= 1) && (reload_time_portal >= 2)) {
@@ -523,31 +528,35 @@ int main(){
             if (shift>=50){
                 level2_start=false;
                 level3_start=true;
+                level3=true;
             }
 
             //level 2 finish
-*/
+
             //level 3 start
 
-            level3_start=true; phase_1=true; level3=true;
-        if (level3_start)
-        {
-            std::cout<<Boss.hp<<std::endl;
-            if (phase_1)
+
+            if (level3_start)
             {
-                if ((Boss.speed>0 && Boss.x>600) || (Boss.speed<0 && Boss.x<000))
-                    Boss.speed=-Boss.speed;
-                Boss.x+=Boss.speed*timer;
-                Boss.sprite.setPosition(Boss.x,Boss.y);
-            }
-           // if (phase_2){
+                if (Boss.hp<=0)
+                    GameOver();
+                if (reload_time_boss_bullet>=4000000){
+                    boss_bullet.x=Boss.x;
+                    boss_bullet.y=Boss.y;
+                    boss_bullet.speed_y=0.15;
+                    enemy_bullets.push_back(boss_bullet);
+                    reload_time_boss_bullet=0;
 
+                }
 
-           // }
-           // if (phase_3){
+                if (phase_1)
+                {
+                    if ((Boss.speed>0 && Boss.x>800) || (Boss.speed<0 && Boss.x<000))
+                        Boss.speed=-Boss.speed;
+                    Boss.x+=Boss.speed*timer;
+                    Boss.sprite.setPosition(Boss.x,Boss.y);
+                }
 
-
-           // }
 
         }
 
