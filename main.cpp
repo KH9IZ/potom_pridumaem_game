@@ -3,16 +3,16 @@
 #include <list>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "../navipudge666/Entity.h"
-#include "../navipudge666/Player.h"
-#include "../navipudge666/SimpleBullet1.h"
-#include "../navipudge666/Enemy.h"
+#include "../Entity.h"
+#include "../Player.h"
+#include "../SimpleBullet1.h"
+#include "../Enemy.h"
 
 
 using namespace sf;
 
-std::string sound_path = "../music_and_sound/";  // Music/sound path;
-std::string img_path="../images/";
+std::string sound_path = "music_and_sound/";  // Music/sound path;
+std::string img_path="images/";
 
 RenderWindow window(VideoMode(800,600), "Potom Pridumaem");
 
