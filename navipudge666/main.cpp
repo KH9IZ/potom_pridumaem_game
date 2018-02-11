@@ -11,8 +11,8 @@
 
 using namespace sf;
 
-std::string sound_path = "music_and_sound/";  // Music/sound path;
-std::string img_path="images/";
+std::string sound_path = "../music_and_sound/";  // Music/sound path;
+std::string img_path="../images/";
 
 RenderWindow window(VideoMode(800,600), "Potom Pridumaem");
 
